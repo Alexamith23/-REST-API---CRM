@@ -1,33 +1,14 @@
 const User = require("../model/userModel.js");
-
-function validar_UserName(username) {
-  var existe = false;
-  User.find({ usuario: username }, function (err, user) {
-    if (!err) {
-      existe = true;
-    }
-  });
-  return existe;
-}
 /**
- * Create new user
- * @param {*} req
- * @param {*} res
+ * Valida si el usuario que se está ingresando es válido
+ * @param {Nombre del usuario a validar} username
+ * @param {El objeto User} user
+ * @param {La respuesta} res
  */
-const userPost = (req, res) => {
-  if (
-    req.body.nombre &&
-    req.body.apellido &&
-    req.body.usuario &&
-    req.body.clave
-  ) {
-    var user = new User();
-    user.nombre = req.body.nombre;
-    user.apellido = req.body.apellido;
-    user.usuario = req.body.usuario;
-    user.clave = req.body.clave;
-    console.log(validar_UserName(user.usuario));
-    if (validar_UserName(user.usuario)) {
+function validar_UserName(username, user, res) {
+  User.find({ usuario: username }, function (err, usere) {
+    console.log(usere.length);
+    if (usere.length == 0) {
       user.save(function (err) {
         if (err) {
           res.status(422);
@@ -48,24 +29,69 @@ const userPost = (req, res) => {
         error: "EL nombre de usuario ya existe. Por favor ingrese otro :(",
       });
     }
+  });
+}
+
+/**
+ * Create new user
+ * @param {*} req
+ * @param {*} res
+ */
+const userPost = (req, res) => {
+  if (
+    req.body.nombre &&
+    req.body.apellido &&
+    req.body.usuario &&
+    req.body.clave
+  ) {
+    var user = new User();
+    user.nombre = req.body.nombre;
+    user.apellido = req.body.apellido;
+    user.usuario = req.body.usuario;
+    user.clave = req.body.clave;
+    validar_UserName(user.usuario, user, res);
   } else {
     res.json({
-      Message: "Por favor ingrese los datos c",
+      Message: "Por favor ingrese los datos",
     });
   }
 };
+
+/**
+ * Obtengo uno o todos los usuarios
+ * @param {*} req
+ * @param {*} res
+ */
 const userGet = (req, res) => {
-  res.status(200); //Todo bien
-  res.json({
-    Message: "Get a user",
-  });
+  // if an specific user is required
+  if (req.query && req.query.id) {
+    console.log("Entra aquì 1");
+
+    User.findById(req.query.id, function (err, user) {
+      if (err) {
+        res.status(404);
+        console.log("error while queryting the user", err);
+        res.json({ error: "User doesnt exist" });
+      }
+      if(!user){
+        res.json("User doesnt exist");
+        return;
+      }
+      res.json(user);
+    });
+  } else {
+      console.log("Entra aquì 2");
+    // get all students
+    User.find(function (err, users) {
+      if (err) {
+        res.status(422);
+        res.json({ error: err });
+      }
+      res.json(users);
+    });
+  }
 };
-const usersGet = (req, res) => {
-  res.status(201); //Todo bien
-  res.json({
-    Message: "Many users",
-  });
-};
+
 const userPatch = (req, res) => {
   res.status(201); //Todo bien
   res.json({
@@ -73,16 +99,38 @@ const userPatch = (req, res) => {
   });
 };
 const userDelete = (req, res) => {
-  res.status(204); //Todo bien
-  res.json({
-    Message: "Delete a user",
-  });
+  // if an specific task is required
+  if (req.query && req.query.id) {
+    User.findById(req.query.id, function (err, user) {
+      if (err) {
+        res.status(500);
+        console.log("error while queryting the user", err);
+        res.json({ error: "User doesnt exist" });
+      }
+      //if the task exists
+      if (user) {
+        user.remove(function (err) {
+          if (err) {
+            res
+              .status(500)
+              .json({ message: "There was an error deleting the user" });
+          }
+          res.status(204).json({ message: "All is ok" });
+        });
+      } else {
+        res.status(404);
+        console.log("error while queryting the user", err);
+        res.json({ error: "User doesnt exist" });
+      }
+    });
+  } else {
+    res.status(404).json({ error: "You must provide a user ID" });
+  }
 };
 
 module.exports = {
   userPost,
   userGet,
-  usersGet,
   userPatch,
   userDelete,
 };
