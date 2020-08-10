@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-//const db = mongoose.connect("mongodb://127.0.0.1/proyectoll");
+const db = mongoose.connect("mongodb://127.0.0.1/CRM_DataBase");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 // const Session = require("./models/sessionsModel");
@@ -9,15 +9,16 @@ const bodyParser = require("body-parser");
 // const jwt = require('jsonwebtoken');
 
 
-
 // check for cors
 app.use(cors());
 
-// parses the body
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-);
+//middlewares
+//app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
-app.listen(3000, () => console.log("TODO API is listening on port 3000!"));
+// routes
+app.use(require('./routes/index.routes'));
+
+// Up server
+app.listen(3000, () => console.log("CRM API is listening on port 3000!"));
