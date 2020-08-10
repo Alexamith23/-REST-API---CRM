@@ -73,14 +73,14 @@ const userGet = (req, res) => {
         console.log("error while queryting the user", err);
         res.json({ error: "User doesnt exist" });
       }
-      if(!user){
+      if (!user) {
         res.json("User doesnt exist");
         return;
       }
       res.json(user);
     });
   } else {
-      console.log("Entra aquì 2");
+    console.log("Entra aquì 2");
     // get all students
     User.find(function (err, users) {
       if (err) {
@@ -93,10 +93,45 @@ const userGet = (req, res) => {
 };
 
 const userPatch = (req, res) => {
-  res.status(201); //Todo bien
-  res.json({
-    Message: "Edit a user",
-  });
+
+  if (req.query && req.query.id) {
+    User.findById(req.query.id, function (err, user) {
+      if (err) {
+        res.status(404);
+        console.log("error while queryting the user", err);
+        res.json({ error: "User doesnt exist edit" });
+      }
+
+      // update the user object (patch)
+      user.nombre = req.body.nombre ? req.body.nombre : nombre.nombre;
+      user.apellido = req.body.apellido
+        ? req.body.apellido
+        : user.apellido;
+      user.usuario = req.body.usuario
+        ? req.body.usuario
+        : user.usuario;
+      user.clave = req.body.clave
+        ? req.body.clave
+        : user.clave;
+
+      // update the user object (put)
+
+      user.save(function (err) {
+        if (err) {
+          res.status(422);
+          console.log("error while saving the user", err);
+          res.json({
+            error: "There was an error saving the user",
+          });
+        }
+        res.status(200); // OK
+        res.json(user);
+      });
+    });
+  } else {
+    res.status(404);
+    res.json({ error: "User doesnt exist aja" });
+  }
 };
 const userDelete = (req, res) => {
   // if an specific task is required
