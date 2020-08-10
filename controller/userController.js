@@ -50,7 +50,7 @@ const userPost = (req, res) => {
     }
   } else {
     res.json({
-      Message: "Por favor ingrese los datos",
+      Message: "Por favor ingrese los datos c",
     });
   }
 };
