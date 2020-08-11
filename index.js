@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const db = mongoose.connect("mongodb://127.0.0.1/CRM_DataBase");
+const db = mongoose.connect("mongodb://127.0.0.1/CRM_API");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 // const Session = require("./models/sessionsModel");

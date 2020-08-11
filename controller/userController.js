@@ -7,7 +7,6 @@ const User = require("../model/userModel.js");
  */
 function validar_UserName(username, user, res) {
   User.find({ usuario: username }, function (err, usere) {
-    console.log(usere.length);
     if (usere.length == 0) {
       user.save(function (err) {
         if (err) {
@@ -92,8 +91,12 @@ const userGet = (req, res) => {
   }
 };
 
+/**
+ * Modifico todo el objeto
+ * @param {*} req 
+ * @param {*} res 
+ */
 const userPatch = (req, res) => {
-
   if (req.query && req.query.id) {
     User.findById(req.query.id, function (err, user) {
       if (err) {
@@ -101,7 +104,6 @@ const userPatch = (req, res) => {
         console.log("error while queryting the user", err);
         res.json({ error: "User doesnt exist edit" });
       }
-
       // update the user object (patch)
       user.nombre = req.body.nombre ? req.body.nombre : nombre.nombre;
       user.apellido = req.body.apellido
@@ -133,6 +135,11 @@ const userPatch = (req, res) => {
     res.json({ error: "User doesnt exist aja" });
   }
 };
+/**
+ * Elimino un usuario
+ * @param {*} req 
+ * @param {*} res 
+ */
 const userDelete = (req, res) => {
   // if an specific task is required
   if (req.query && req.query.id) {
