@@ -9,7 +9,7 @@ const {
   userDelete,
 } = require("../controller/userController.js");
 
-//Call methods user
+//Call methods clientes
 const {
   clientPost,
   clientGet,
@@ -17,13 +17,20 @@ const {
   clientDelete,
 } = require("../controller/clientesController.js");
 
-//Call methods user
+//Call methods contactos
 const {
   contactPost,
   contactGet,
   contactPatch,
   contactDelete,
 } = require("../controller/contactController.js");
+//Call methods reuniones
+const {
+  reunionesPost,
+  reunionesGet,
+  reunionesPatch,
+  reunionesDelete,
+} = require("../controller/reunionesController");
 
 //Listen to the users request
 router.post("/CRM/users", userPost);
@@ -42,5 +49,11 @@ router.post("/CRM/contacs", contactPost);
 router.get("/CRM/contacs", contactGet);
 router.patch("/CRM/contacs", contactPatch);
 router.delete("/CRM/contacs", contactDelete);
+
+//Listen to the reuniones request
+router.post("/CRM/reuniones",reunionesPost);
+router.get("/CRM/reuniones",reunionesGet);
+router.patch("/CRM/reuniones",reunionesPatch);
+router.delete("/CRM/reuniones",reunionesDelete);
 
 module.exports = router;

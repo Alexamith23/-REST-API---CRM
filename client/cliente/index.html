@@ -32,11 +32,103 @@
   </head>
 
   <body>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">CRM Inicio de sesión</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group row">
+                <label for="inputEmail3" class="col-sm-2 col-form-label">Correo</label>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-9">
+                  <input type="email" class="form-control" id="inputEmail3" placeholder="Correo">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inputPassword3" class="col-sm-2 col-form-label">Contraseña</label>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-9">
+                  <input type="password" class="form-control" id="inputPassword3" placeholder="Contraseña">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">Entrar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">CRM Registro</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="POST">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="nombre">Nombre</label>
+                  <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="apellido">Apellidos</label>
+                  <input type="text" class="form-control" name="apellido" id="apellido" placeholder="apellido">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="usuario">Usuario</label>
+                <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Usuario">
+              </div>
+              <div class="form-group">
+                <label for="clave">Contraseña</label>
+                <input type="password" class="form-control" name="clave" id="clave" placeholder="***********">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="registrar_usuario()">Entrar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Mensaje -->
+    <div class="modal" tabindex="-1" role="dialog" id="sms">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Mensaje</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="mensaje">
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">aceptar</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Navigation -->
     <nav class="navbar navbar-light bg-light static-top">
       <div class="container">
         <a class="navbar-brand" href="#">CRM API</a>
-        <a class="btn btn-primary " href="#">Entrar</a>
+        <a type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModalCenter" href="#">Entrar</a>
       </div>
     </nav>
 
@@ -52,7 +144,7 @@
             </h1>
           </div>
           <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-            <a class="btn btn-primary btn-lg" href="#">Registrarme</a>
+            <a type="button" class="btn btn-primary " data-toggle="modal" data-target="#modal_registro" href="#">Registrarme</a>
           </div>
         </div>
       </div>
@@ -225,6 +317,7 @@
       </div>
     </footer>
 
+    <script src="./Js/controller.js"></script>
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

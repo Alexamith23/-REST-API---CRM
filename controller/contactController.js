@@ -1,11 +1,5 @@
 const Contact = require("../model/contactModel.js");
 
-/**
- * Valida si la cedula que se está ingresando es válido
- * @param {cedula} cedula
- * @param {El objeto client} user
- * @param {La respuesta} res
- */
 
 /**
  * Crear un cliente nuevo
@@ -94,15 +88,9 @@ const contactPatch = (req, res) => {
       }
       // update the user object (patch)
       contact.nombre = req.body.nombre ? req.body.nombre : nombre.nombre;
-      contact.apellido = req.body.apellido
-        ? req.body.apellido
-        : contact.apellido;
-      contact.telefono = req.body.telefono
-        ? req.body.telefono
-        : contact.telefono;
-      contact.correo = req.body.correo
-        ? req.body.correo
-        : contact.correo;
+      contact.apellido = req.body.apellido ? req.body.apellido : contact.apellido;
+      contact.telefono = req.body.telefono ? req.body.telefono : contact.telefono;
+      contact.correo = req.body.correo ? req.body.correo : contact.correo;
       contact.telefono = req.body.telefono ? req.body.telefono : contact.telefono;
       contact.puesto = req.body.puesto ? req.body.puesto : contact.puesto;
 

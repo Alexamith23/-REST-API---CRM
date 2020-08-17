@@ -18,14 +18,14 @@ function validar_UserName(username, user, res) {
         }
         res.status(201); //CREATED
         res.header({
-          location: `http://localhost:3000/CRM/users?id=${user.id}`,
+          location: `http://http://localhost/client/cliente?id=${user.id}`,
         });
         res.json(user);
       });
     } else {
       res.status(422);
       res.json({
-        error: "EL nombre de usuario ya existe. Por favor ingrese otro :(",
+        repetido: "EL nombre de usuario ya existe. Por favor ingrese otro :(",
       });
     }
   });
@@ -37,17 +37,21 @@ function validar_UserName(username, user, res) {
  * @param {*} res
  */
 const userPost = (req, res) => {
+  console.log(req.query.nombre);
+  console.log(req.query.apellido);
+  console.log(req.query.usuario);
+  console.log(req.query.clave);
   if (
-    req.body.nombre &&
-    req.body.apellido &&
-    req.body.usuario &&
-    req.body.clave
+    req.query.nombre &&
+    req.query.apellido &&
+    req.query.usuario &&
+    req.query.clave
   ) {
     var user = new User();
-    user.nombre = req.body.nombre;
-    user.apellido = req.body.apellido;
-    user.usuario = req.body.usuario;
-    user.clave = req.body.clave;
+    user.nombre = req.query.nombre;
+    user.apellido = req.query.apellido;
+    user.usuario = req.query.usuario;
+    user.clave = req.query.clave;
     validar_UserName(user.usuario, user, res);
   } else {
     res.json({
