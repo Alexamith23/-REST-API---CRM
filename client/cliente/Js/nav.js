@@ -1,6 +1,8 @@
 var output = document.getElementById("nav");
 var administrador = false;
-output.innerHTML += `<a class="navbar-brand" href="#" id ="nav_color"style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">CRM Portillo´s</a>
+output.innerHTML += `<a class="navbar-brand" href="#" id ="nav_color"style="font-family: Impact, 
+                    Haettenschweiler, 'Arial Narrow Bold', sans-serif;"><i class="fa fa-diamond" aria-hidden="true"></i>
+                    CRM Portillo´s</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
