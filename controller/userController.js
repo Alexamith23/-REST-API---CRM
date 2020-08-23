@@ -1,4 +1,6 @@
 const User = require("../model/userModel.js");
+const Session = require("../model/sessionModel.js");
+const crypto = require("crypto");
 /**
  * Valida si el usuario que se está ingresando es válido
  * @param {Nombre del usuario a validar} username
@@ -37,10 +39,6 @@ function validar_UserName(username, user, res) {
  * @param {*} res
  */
 const userPost = (req, res) => {
-  console.log(req.query.nombre);
-  console.log(req.query.apellido);
-  console.log(req.query.usuario);
-  console.log(req.query.clave);
   if (
     req.query.nombre &&
     req.query.apellido &&
@@ -52,6 +50,7 @@ const userPost = (req, res) => {
     user.apellido = req.query.apellido;
     user.usuario = req.query.usuario;
     user.clave = req.query.clave;
+    user.administrador = false;
     validar_UserName(user.usuario, user, res);
   } else {
     res.json({
@@ -68,8 +67,6 @@ const userPost = (req, res) => {
 const userGet = (req, res) => {
   // if an specific user is required
   if (req.query && req.query.id) {
-    console.log("Entra aquì 1");
-
     User.findById(req.query.id, function (err, user) {
       if (err) {
         res.status(404);
@@ -83,7 +80,6 @@ const userGet = (req, res) => {
       res.json(user);
     });
   } else {
-    console.log("Entra aquì 2");
     // get all students
     User.find(function (err, users) {
       if (err) {
@@ -97,8 +93,8 @@ const userGet = (req, res) => {
 
 /**
  * Modifico todo el objeto
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 const userPatch = (req, res) => {
   if (req.query && req.query.id) {
@@ -110,15 +106,9 @@ const userPatch = (req, res) => {
       }
       // update the user object (patch)
       user.nombre = req.body.nombre ? req.body.nombre : nombre.nombre;
-      user.apellido = req.body.apellido
-        ? req.body.apellido
-        : user.apellido;
-      user.usuario = req.body.usuario
-        ? req.body.usuario
-        : user.usuario;
-      user.clave = req.body.clave
-        ? req.body.clave
-        : user.clave;
+      user.apellido = req.body.apellido ? req.body.apellido : user.apellido;
+      user.usuario = req.body.usuario ? req.body.usuario : user.usuario;
+      user.clave = req.body.clave ? req.body.clave : user.clave;
 
       // update the user object (put)
 
@@ -141,8 +131,8 @@ const userPatch = (req, res) => {
 };
 /**
  * Elimino un usuario
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 const userDelete = (req, res) => {
   // if an specific task is required
@@ -173,10 +163,56 @@ const userDelete = (req, res) => {
     res.status(404).json({ error: "You must provide a user ID" });
   }
 };
+/**
+ * Autentica un cliente
+ * @param {*} req
+ * @param {*} res
+ */
+const userAutenticate = (req, res) => {
+  if (req.query.usuario && req.query.clave) {
+    User.find({ usuario: req.query.usuario, clave: req.query.clave },function (err, usere) {
+        if (usere.length > 0) {
+          res.json({
+            token:saveSession(req.query.usuario)
+          });
+        } else {
+          res.status(422);
+          res.json({
+            repetido: "Nombre de usuario o contraseña incorrecto",
+          });
+        }
+      }
+    );
+  } else {
+    res.status(401);
+    res.send({
+      vacio: "Por favor llene todos los campos ",
+    });
+  }
+};
+
+/**
+ * Creates a new session for the user
+ *
+ * @param {*} username
+ */
+const saveSession = function (username) {
+  console.log(username);
+  const token = crypto.createHash("md5").update(username).digest("hex");
+  // insert token to the session table
+  let session = new Session();
+  session.token = token;
+  session.user = username;
+  session.expire = new Date();
+  session = session.save();
+  console.log(session);
+  return token;
+};
 
 module.exports = {
   userPost,
   userGet,
   userPatch,
   userDelete,
+  userAutenticate,
 };

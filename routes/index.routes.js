@@ -7,6 +7,7 @@ const {
   userGet,
   userPatch,
   userDelete,
+  userAutenticate
 } = require("../controller/userController.js");
 
 //Call methods clientes
@@ -14,7 +15,7 @@ const {
   clientPost,
   clientGet,
   clientPatch,
-  clientDelete,
+  clientDelete
 } = require("../controller/clientesController.js");
 
 //Call methods contactos
@@ -37,6 +38,7 @@ router.post("/CRM/users", userPost);
 router.get("/CRM/users", userGet);
 router.patch("/CRM/users", userPatch);
 router.delete("/CRM/users", userDelete);
+router.post("/CRM/userLogin", userAutenticate);
 
 //Listen to the clientes request
 router.post("/CRM/clientes", clientPost);

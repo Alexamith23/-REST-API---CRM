@@ -34,8 +34,8 @@ function validar_cedula_juridica(cedula, client, res) {
 }
 /**
  * Crear un cliente nuevo
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 const clientPost = (req, res) => {
   if (
@@ -64,8 +64,8 @@ const clientPost = (req, res) => {
 };
 /**
  * Obtine uno o todos los clientes
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 const clientGet = (req, res) => {
   // if an specific user is required
@@ -95,8 +95,8 @@ const clientGet = (req, res) => {
 };
 /**
  * Edita un cliente
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 const clientPatch = (req, res) => {
   if (req.query && req.query.id) {
@@ -141,8 +141,8 @@ const clientPatch = (req, res) => {
 
 /**
  * Elimina un cliente
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 const clientDelete = (req, res) => {
   // if an specific task is required
@@ -178,5 +178,5 @@ module.exports = {
   clientPost,
   clientGet,
   clientPatch,
-  clientDelete,
+  clientDelete
 };

@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 // const jwt = require('jsonwebtoken');
 
 
-// check for cors
+// check for cor
 app.use(cors());
 
 //middlewares

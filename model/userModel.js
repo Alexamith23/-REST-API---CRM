@@ -5,7 +5,8 @@ const user = new Schema({
     nombre: { type: String },
     apellido: { type: String },
     usuario: { type: String },
-    clave: { type: String }
+    clave: { type: String },
+    administrador: { type: Boolean }
   });
 
   module.exports = mongoose.model('users', user);

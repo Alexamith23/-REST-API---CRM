@@ -45,22 +45,22 @@
           <div class="modal-body">
             <form>
               <div class="form-group row">
-                <label for="inputEmail3" class="col-sm-2 col-form-label">Correo</label>
+                <label for="inputEmail3" class="col-sm-2 col-form-label">Usuario</label>
                 <div class="col-sm-1"></div>
                 <div class="col-sm-9">
-                  <input type="email" class="form-control" id="inputEmail3" placeholder="Correo">
+                  <input type="text" class="form-control" id="inputEmail3" name="inputEmail3" placeholder="Usuario">
                 </div>
               </div>
               <div class="form-group row">
                 <label for="inputPassword3" class="col-sm-2 col-form-label">Contraseña</label>
                 <div class="col-sm-1"></div>
                 <div class="col-sm-9">
-                  <input type="password" class="form-control" id="inputPassword3" placeholder="Contraseña">
+                  <input type="password" class="form-control" id="inputPassword3" name="inputPassword3" placeholder="Contraseña">
                 </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary">Entrar</button>
+                <button type="button" class="btn btn-primary" onclick="autenticar()">Entrar</button>
               </div>
             </form>
           </div>
@@ -127,7 +127,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-light bg-light static-top">
       <div class="container">
-        <a class="navbar-brand" href="#">CRM API</a>
+        <a class="navbar-brand" href="#">Portillo`s CR</a>
         <a type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModalCenter" href="#">Entrar</a>
       </div>
     </nav>
@@ -136,6 +136,7 @@
     <header class="masthead text-white text-center">
       <div class="overlay"></div>
       <div class="container">
+        
         <div class="row">
           <div class="col-xl-9 mx-auto">
             <h1 class="mb-5">

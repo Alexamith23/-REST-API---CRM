@@ -1,5 +1,5 @@
+let output = document.getElementById("mensaje");
 function registrar_usuario() {
-  var output = document.getElementById("mensaje");
   var nombre = document.getElementById("nombre").value;
   var apellido = document.getElementById("apellido").value;
   var usuario = document.getElementById("usuario").value;
@@ -26,7 +26,48 @@ function registrar_usuario() {
   const ajaxRequest = new XMLHttpRequest();
   ajaxRequest.addEventListener("load", completed);
   ajaxRequest.addEventListener("error", error);
-  ajaxRequest.open("POST","http://localhost:3000/CRM/users?nombre=" +nombre +"&apellido=" +apellido +"&usuario=" +usuario +"&clave=" +clave);
+  ajaxRequest.open(
+    "POST",
+    "http://localhost:3000/CRM/users?nombre=" +
+      nombre +
+      "&apellido=" +
+      apellido +
+      "&usuario=" +
+      usuario +
+      "&clave=" +
+      clave
+  );
   ajaxRequest.send();
 }
 
+function autenticar() {
+  var usuario = document.getElementById("inputEmail3").value;
+  var clave = document.getElementById("inputPassword3").value;
+  var mensaje = "";
+  const completed = (e) => {
+    var persona = JSON.parse(e.target.responseText);
+    if (persona.vacio) {
+      mensaje = "Por favor ingrese todos los datos solicitados";
+    } else if (persona.repetido) {
+      mensaje = "Nombre de usuario o contraseña incorrecto";
+    } else if (persona.token) {
+      window.open("./html/dashboard_user.html", "_self");
+    }
+    if (mensaje != "") {
+      $("#exampleModalCenter").modal("hide");
+      output.innerHTML = mensaje;
+      $("#sms").modal();
+    }
+  };
+
+  const error = () => console.log(this.responseText);
+
+  const ajaxRequest = new XMLHttpRequest();
+  ajaxRequest.addEventListener("load", completed);
+  ajaxRequest.addEventListener("error", error);
+  ajaxRequest.open(
+    "POST",
+    "http://localhost:3000/CRM/userLogin?usuario=" + usuario + "&clave=" + clave
+  );
+  ajaxRequest.send();
+}
