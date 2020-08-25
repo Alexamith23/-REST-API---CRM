@@ -82,7 +82,27 @@ const clientGet = (req, res) => {
       }
       res.json(client);
     });
-  } else {
+  } else if(req.query && req.query.id_user){
+    console.log("entra aqui");
+    Cliente.find({user:req.query.id_user}, function (err, client) {
+      console.log(client);
+      if (err) {
+        console.log("entra aqui2");
+        res.status(404);
+        console.log("error while queryting the client", err);
+        res.json({ error: "Client doesnt exist" });
+      }
+      if (client.length > 0) {
+        console.log("entra aqui3");
+        res.json({ clientes: client});
+        return;
+      }else{
+        console.log("entra aqui4");
+        res.json({ no_clientes: "Por el momento no tiene clientes registrados" });
+      }
+    });
+  }else {
+    console.log("entra aqui5");
     // get all students
     Cliente.find(function (err, client) {
       if (err) {

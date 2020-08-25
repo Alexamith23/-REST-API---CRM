@@ -1,5 +1,7 @@
 const User = require("../model/userModel.js");
 const Session = require("../model/sessionModel.js");
+const jwt = require('jsonwebtoken');
+const config = require('../config');
 const crypto = require("crypto");
 /**
  * Valida si el usuario que se está ingresando es válido
@@ -168,12 +170,41 @@ const userDelete = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
+// const userAutenticate = (req, res) => {
+//   if (req.query.usuario && req.query.clave) {
+//     User.find({ usuario: req.query.usuario, clave: req.query.clave },function (err, usere) {
+//         if (usere.length > 0) {
+//           res.json({
+//             token:saveSession(req.query.usuario)
+//           });
+//         } else {
+//           res.status(422);
+//           res.json({
+//             repetido: "Nombre de usuario o contraseña incorrecto",
+//           });
+//         }
+//       }
+//     );
+//   } else {
+//     res.status(401);
+//     res.send({
+//       vacio: "Por favor llene todos los campos ",
+//     });
+//   }
+// };
+
+
+
+
+
+
+
 const userAutenticate = (req, res) => {
   if (req.query.usuario && req.query.clave) {
-    User.find({ usuario: req.query.usuario, clave: req.query.clave },function (err, usere) {
-        if (usere.length > 0) {
+    User.find({ usuario: req.query.usuario, clave: req.query.clave },function (err, usuario) {
+        if (usuario.length > 0) {
           res.json({
-            token:saveSession(req.query.usuario)
+            token: saveSession(usuario[0])
           });
         } else {
           res.status(422);
@@ -191,23 +222,132 @@ const userAutenticate = (req, res) => {
   }
 };
 
+const saveSession = function (user) {
+  const token = jwt.sign({user},config.llave,{
+    expiresIn: 5
+   });
+  // insert token to the session table
+  let session = new Session();
+  session.token = token;
+  session.user = user._id;
+  session.expire = new Date();
+  session = session.save();
+  return token;
+};
+
+
+
+// Token based Auth Middleware
+function validarToken (req, res, next) {
+  if (req.headers["authorization"]) {
+    const token = req.headers['authorization'];
+    try {
+      //validate if token exists in the database
+      Session.findOne({ token }, function (error, session) {
+        if (error) {
+          res.status(401);
+          res.send({
+            Unauthorized: "Unauthorized 1"
+          });
+        }
+        if (session) {
+          console.log(session.user);
+          req.query.id_user = session.user;
+           next();
+           return;
+        } else {
+          res.status(401);
+          res.send({
+            Unauthorized: "Unauthorized 2"
+          });
+        }
+      });
+    } catch (e) {
+      res.status(422);
+      res.send({
+        error: "There was an error: " + e.message
+      });
+    }
+  } else {
+    res.status(401);
+    res.send({
+      error: "Unauthorized "
+    });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Creates a new session for the user
  *
  * @param {*} username
  */
-const saveSession = function (username) {
-  console.log(username);
-  const token = crypto.createHash("md5").update(username).digest("hex");
-  // insert token to the session table
-  let session = new Session();
-  session.token = token;
-  session.user = username;
-  session.expire = new Date();
-  session = session.save();
-  console.log(session);
-  return token;
-};
+// const saveSession = function (username) {
+//   const token = crypto.createHash("md5").update(username).digest("hex");
+//   // insert token to the session table
+//   let session = new Session();
+//   session.token = token;
+//   session.user = username;
+//   session.expire = new Date();
+//   session = session.save();
+//   return token;
+// };
+
+
+/**
+ * Delete session
+ *
+ * @param {*} token
+ */
+const destroySession = (req, res) => {
+  console.log("Entra");
+  if (req.headers["authorization"]) {
+    const token = req.headers['authorization'].split(' ')[1];
+    Session.deleteOne({ token: token }, function (err) {
+      if (err) {
+        console.log('error', err);
+      }
+      res.send({
+        borrado: true
+      });
+    });
+  } else {
+    res.status(401);
+    res.send({
+      error: "No llega el header "
+    });
+  }
+}
+
+
+
+
+
 
 module.exports = {
   userPost,
@@ -215,4 +355,6 @@ module.exports = {
   userPatch,
   userDelete,
   userAutenticate,
+  validarToken,
+  destroySession
 };

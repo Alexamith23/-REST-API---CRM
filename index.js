@@ -6,7 +6,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 // const Session = require("./models/sessionsModel");
 // const config = require('./config');
-// const jwt = require('jsonwebtoken');
+
 
 
 // check for cor
