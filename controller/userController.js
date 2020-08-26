@@ -3,6 +3,8 @@ const Session = require("../model/sessionModel.js");
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 const crypto = require("crypto");
+require("dotenv").config();
+const jwtKey = 'QHhpZGlvCg==';
 /**
  * Valida si el usuario que se está ingresando es válido
  * @param {Nombre del usuario a validar} username
@@ -165,41 +167,10 @@ const userDelete = (req, res) => {
     res.status(404).json({ error: "You must provide a user ID" });
   }
 };
-/**
- * Autentica un cliente
- * @param {*} req
- * @param {*} res
- */
-// const userAutenticate = (req, res) => {
-//   if (req.query.usuario && req.query.clave) {
-//     User.find({ usuario: req.query.usuario, clave: req.query.clave },function (err, usere) {
-//         if (usere.length > 0) {
-//           res.json({
-//             token:saveSession(req.query.usuario)
-//           });
-//         } else {
-//           res.status(422);
-//           res.json({
-//             repetido: "Nombre de usuario o contraseña incorrecto",
-//           });
-//         }
-//       }
-//     );
-//   } else {
-//     res.status(401);
-//     res.send({
-//       vacio: "Por favor llene todos los campos ",
-//     });
-//   }
-// };
-
-
-
-
-
 
 
 const userAutenticate = (req, res) => {
+  console.log('entra');
   if (req.query.usuario && req.query.clave) {
     User.find({ usuario: req.query.usuario, clave: req.query.clave },function (err, usuario) {
         if (usuario.length > 0) {
@@ -223,9 +194,9 @@ const userAutenticate = (req, res) => {
 };
 
 const saveSession = function (user) {
-  const token = jwt.sign({user},config.llave,{
-    expiresIn: 5
-   });
+  const usuario = {_id:user._id,nombre:user.nombre,apellido:user.apellido,usuario:user.usuario,clave:user.clave};
+  const token = jwt.sign(usuario,jwtKey);
+  console.log(token);
   // insert token to the session table
   let session = new Session();
   session.token = token;
@@ -241,31 +212,40 @@ const saveSession = function (user) {
 function validarToken (req, res, next) {
   if (req.headers["authorization"]) {
     const token = req.headers['authorization'];
-    try {
-      //validate if token exists in the database
-      Session.findOne({ token }, function (error, session) {
-        if (error) {
-          res.status(401);
-          res.send({
-            Unauthorized: "Unauthorized 1"
-          });
-        }
-        if (session) {
-          console.log(session.user);
-          req.query.id_user = session.user;
-           next();
-           return;
-        } else {
-          res.status(401);
-          res.send({
-            Unauthorized: "Unauthorized 2"
-          });
-        }
-      });
-    } catch (e) {
-      res.status(422);
+    const token_s = token.split(' ')[1];
+    console.log(validar_que_el_token_sea_válido(token_s));
+    if (validar_que_el_token_sea_válido(token_s) == true) {
+      try {
+        //validate if token exists in the database
+        Session.find({ token:token_s }, function (error, session) {
+          if (error) {
+            res.status(401);
+            res.send({
+              Unauthorized: "Unauthorized 1"
+            });
+          }
+          console.log(session);
+          if (session === null) {
+            res.status(401);
+            res.send({
+              Unauthorized: "Unauthorized 2"
+            });
+          } else {
+            console.log(session.user);
+            req.query.id_user = session.user;
+             next();
+             return;
+          }
+        });
+      } catch (e) {
+        res.status(422);
+        res.send({
+          error: "There was an error: " + e.message
+        });
+      }
+    }else{
       res.send({
-        error: "There was an error: " + e.message
+        error: "Token inválidoooo "
       });
     }
   } else {
@@ -279,73 +259,36 @@ function validarToken (req, res, next) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Creates a new session for the user
- *
- * @param {*} username
- */
-// const saveSession = function (username) {
-//   const token = crypto.createHash("md5").update(username).digest("hex");
-//   // insert token to the session table
-//   let session = new Session();
-//   session.token = token;
-//   session.user = username;
-//   session.expire = new Date();
-//   session = session.save();
-//   return token;
-// };
-
-
 /**
  * Delete session
  *
  * @param {*} token
  */
 const destroySession = (req, res) => {
-  console.log("Entra");
+  console.log("Entraaaaaaaaaaaaaaaaaaaaa");
   if (req.headers["authorization"]) {
-    const token = req.headers['authorization'].split(' ')[1];
-    Session.deleteOne({ token: token }, function (err) {
+    const token = req.headers['authorization'];
+    console.log(token);
+    Session.deleteOne({ token: token }, function(err, result) {
       if (err) {
-        console.log('error', err);
+        res.send(err);
+      } else {
+        console.log("Entraaaaaaaaaaaaaaaaaaaaa 22222222");
+        res.status(201).json({ persona: "result" });
       }
-      res.send({
-        borrado: true
-      });
     });
-  } else {
-    res.status(401);
-    res.send({
-      error: "No llega el header "
-    });
-  }
+}}
+
+
+function validar_que_el_token_sea_válido(token) {
+  let existe = true;
+  jwt.verify(token,jwtKey, (err,data)=>{
+    if (err) {
+        existe = false;
+    }
+  });
+  return existe;
 }
-
-
-
 
 
 

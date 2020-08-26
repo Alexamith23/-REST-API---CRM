@@ -107,21 +107,21 @@
     <script type="text/javascript" src="../Js/compartidos/nav.js"></script>
     <script>
       function cerrar_session() {
-  const completed = (e) => {
-    var persona = JSON.parse(e.target.responseText);
-    if (persona.borrado) {
-      localStorage.removeItem("usuarios");
-      window.open("../index.html", "_self");
-    } 
-  };
-  const error = () => console.log(this.responseText);
-  let persona = JSON.parse(localStorage.getItem("usuarios"));
-  const ajaxRequest = new XMLHttpRequest();
-  ajaxRequest.addEventListener("load", completed);
-  ajaxRequest.addEventListener("error", error);
-  ajaxRequest.open("DELETE","http://localhost:3000/CRM/logout");
-  ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
-  ajaxRequest.send();
+        const completed = (e) => {
+          var persona = JSON.parse(e.target.responseText);
+          if (persona) {
+            localStorage.removeItem("usuarios");
+            window.open("../index.html", "_self");
+          } 
+        };
+        const error = () => console.log(this.responseText);
+        let persona = JSON.parse(localStorage.getItem("usuarios"));
+        const ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.addEventListener("load", completed);
+        ajaxRequest.addEventListener("error", error);
+        ajaxRequest.open("DELETE","http://localhost:3000/CRM/logout");
+        ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
+        ajaxRequest.send();
 }
     </script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>

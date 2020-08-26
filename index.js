@@ -4,10 +4,6 @@ const mongoose = require("mongoose");
 const db = mongoose.connect("mongodb://127.0.0.1/CRM_API");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-// const Session = require("./models/sessionsModel");
-// const config = require('./config');
-
-
 
 // check for cor
 app.use(cors());
