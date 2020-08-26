@@ -70,6 +70,7 @@ const clientPost = (req, res) => {
 const clientGet = (req, res) => {
   // if an specific user is required
   if (req.query && req.query.id) {
+    console.log("Entra aqui");
     Cliente.findById(req.query.id, function (err, client) {
       if (err) {
         res.status(404);
@@ -84,7 +85,6 @@ const clientGet = (req, res) => {
     });
   } else if(req.query && req.query.id_user){
       Cliente.find({user:req.query.id_user}, function (err, client) {
-        console.log(client);
         if (err) {
           res.status(404);
           console.log("error while queryting the client", err);

@@ -86,7 +86,10 @@ function cargar_clientes() {
     } else if(clientes.no_clientes){
       document.getElementById("admin").innerText = "¡¡¡Vaya al parecer no tienes clientes!!!";
       
-    }else if(clientes.clientes){
+    }else if(clientes.error){
+      alert(clientes.error);
+    }
+    else if(clientes.clientes){
       let arreglo = clientes.clientes;
       var d = '';
       for (var i = 0; i < arreglo.length; i++) {
@@ -110,7 +113,7 @@ function cargar_clientes() {
   const ajaxRequest = new XMLHttpRequest();
   ajaxRequest.addEventListener("load", completed);
   ajaxRequest.addEventListener("error", error);
-  ajaxRequest.open("GET","http://localhost:3000/CRM/clientes?id_user");
+  ajaxRequest.open("GET","http://localhost:3000/CRM/clientes?id_user=1");
   ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
   ajaxRequest.send();
 }

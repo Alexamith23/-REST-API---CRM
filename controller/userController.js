@@ -168,9 +168,12 @@ const userDelete = (req, res) => {
   }
 };
 
-
+/**
+ * Revisa que el usuario y contraseña existan y crea la session
+ * @param {} req 
+ * @param {*} res 
+ */
 const userAutenticate = (req, res) => {
-  console.log('entra');
   if (req.query.usuario && req.query.clave) {
     User.find({ usuario: req.query.usuario, clave: req.query.clave },function (err, usuario) {
         if (usuario.length > 0) {
@@ -193,6 +196,10 @@ const userAutenticate = (req, res) => {
   }
 };
 
+/**
+ * Guarda en la base de datos la session del usuario
+ * @param {*} user 
+ */
 const saveSession = function (user) {
   const usuario = {_id:user._id,nombre:user.nombre,apellido:user.apellido,usuario:user.usuario,clave:user.clave};
   const token = jwt.sign(usuario,jwtKey);
@@ -206,18 +213,19 @@ const saveSession = function (user) {
   return token;
 };
 
-
-
-// Token based Auth Middleware
+/**
+ * Auth Middleware
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 function validarToken (req, res, next) {
   if (req.headers["authorization"]) {
     const token = req.headers['authorization'];
-    const token_s = token.split(' ')[1];
-    console.log(validar_que_el_token_sea_válido(token_s));
-    if (validar_que_el_token_sea_válido(token_s) == true) {
+    if (validar_que_el_token_sea_válido(token) == true) {
       try {
         //validate if token exists in the database
-        Session.find({ token:token_s }, function (error, session) {
+        Session.find({ token:token }, function (error, session) {
           if (error) {
             res.status(401);
             res.send({
@@ -231,8 +239,7 @@ function validarToken (req, res, next) {
               Unauthorized: "Unauthorized 2"
             });
           } else {
-            console.log(session.user);
-            req.query.id_user = session.user;
+            req.query.id_user = session[0].user;
              next();
              return;
           }
@@ -256,34 +263,33 @@ function validarToken (req, res, next) {
   }
 };
 
-
-
-
 /**
  * Delete session
  *
- * @param {*} token
+ * @param {*} 
  */
 const destroySession = (req, res) => {
-  console.log("Entraaaaaaaaaaaaaaaaaaaaa");
   if (req.headers["authorization"]) {
     const token = req.headers['authorization'];
-    console.log(token);
     Session.deleteOne({ token: token }, function(err, result) {
       if (err) {
         res.send(err);
       } else {
-        console.log("Entraaaaaaaaaaaaaaaaaaaaa 22222222");
         res.status(201).json({ persona: "result" });
       }
     });
 }}
 
-
+/**
+ * Por si se envia un token inválido, esta funcion verifica que el token sea correcto
+ * @param {Token del usuario} token 
+ */
 function validar_que_el_token_sea_válido(token) {
+  console.log("MiToken: "+token);
   let existe = true;
   jwt.verify(token,jwtKey, (err,data)=>{
     if (err) {
+      console.log(err);
         existe = false;
     }
   });
