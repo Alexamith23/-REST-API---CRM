@@ -13,9 +13,6 @@ function validar_cedula_juridica(cedula, client, res) {
         if (err) {
           res.status(422);
           console.log("error while saving the client", err);
-          res.json({
-            error: "There was an error saving the client",
-          });
         }
         res.status(201); //CREATED
         res.header({
@@ -26,8 +23,7 @@ function validar_cedula_juridica(cedula, client, res) {
     } else {
       res.status(422);
       res.json({
-        error:
-          "EL numero de la cedula jurídica ya existe. Por favor revise los datos ingresados :(",
+        error:"EL numero de la cedula jurídica ya existe. Por favor revise los datos ingresados :(",
       });
     }
   });
@@ -39,26 +35,27 @@ function validar_cedula_juridica(cedula, client, res) {
  */
 const clientPost = (req, res) => {
   if (
-    req.body.user &&
-    req.body.nombre &&
-    req.body.ced_juridica &&
-    req.body.pagina_web &&
-    req.body.direccion &&
-    req.body.telefono &&
-    req.body.sector
+    req.query &&
+    req.query.id_user &&
+    req.query.nombre &&
+    req.query.ced_juridica &&
+    req.query.pagina_web &&
+    req.query.direccion &&
+    req.query.telefono &&
+    req.query.sector
   ) {
     var client = new Cliente();
-    client.user = req.body.user;
-    client.nombre = req.body.nombre;
-    client.ced_juridica = req.body.ced_juridica;
-    client.pagina_web = req.body.pagina_web;
-    client.direccion = req.body.direccion;
-    client.telefono = req.body.telefono;
-    client.sector = req.body.sector;
+    client.user = req.query.id_user;
+    client.nombre = req.query.nombre;
+    client.ced_juridica = req.query.ced_juridica;
+    client.pagina_web = req.query.pagina_web;
+    client.direccion = req.query.direccion;
+    client.telefono = req.query.telefono;
+    client.sector = req.query.sector;
     validar_cedula_juridica(client.ced_juridica, client, res);
   } else {
     res.json({
-      Message: "Por favor ingrese los datos",
+      vacio: "Por favor ingrese los datos",
     });
   }
 };
@@ -70,20 +67,29 @@ const clientPost = (req, res) => {
 const clientGet = (req, res) => {
   // if an specific user is required
   if (req.query && req.query.id) {
-    console.log("Entra aqui");
+    console.log("Entra aquiiiiiiiii");
     Cliente.findById(req.query.id, function (err, client) {
       if (err) {
         res.status(404);
         console.log("error while queryting the client", err);
         res.json({ error: "Client doesnt exist" });
       }
-      if (!client) {
-        res.json("Client doesnt exist");
+      if (client) {
+        console.log(client);
+        res.send(client);
+        // res.json(client);
         return;
+      }else{
+        console.log("No esta");
+        res.json({ no_clientes: "Por el momento no tiene clientes registrados" });
       }
-      res.json(client);
     });
-  } else if(req.query && req.query.id_user){
+  } 
+  
+  
+  
+  else if(req.query && req.query.id_user){
+    console.log("Tambien aqui");
       Cliente.find({user:req.query.id_user}, function (err, client) {
         if (err) {
           res.status(404);
@@ -119,21 +125,22 @@ const clientPatch = (req, res) => {
       if (err) {
         res.status(404);
         console.log("error while queryting the client", err);
-        res.json({ error: "Client doesnt exist edit" });
+        res.json({ error: "El cliente no existe" });
       }
+      console.log("Entra");
       // update the user object (patch)
-      client.nombre = req.body.nombre ? req.body.nombre : nombre.nombre;
-      client.ced_juridica = req.body.ced_juridica
-        ? req.body.ced_juridica
+      client.nombre = req.query.nombre ? req.query.nombre : nombre.nombre;
+      client.ced_juridica = req.query.ced_juridica
+        ? req.query.ced_juridica
         : client.ced_juridica;
-      client.pagina_web = req.body.pagina_web
-        ? req.body.pagina_web
+      client.pagina_web = req.query.pagina_web
+        ? req.query.pagina_web
         : client.pagina_web;
-      client.direccion = req.body.direccion
-        ? req.body.direccion
+      client.direccion = req.query.direccion
+        ? req.query.direccion
         : client.direccion;
-      client.telefono = req.body.telefono ? req.body.telefono : client.telefono;
-      client.sector = req.body.sector ? req.body.sector : client.sector;
+      client.telefono = req.query.telefono ? req.query.telefono : client.telefono;
+      client.sector = req.query.sector ? req.query.sector : client.sector;
 
       // update the user object (put)
       client.save(function (err) {
@@ -145,7 +152,7 @@ const clientPatch = (req, res) => {
           });
         }
         res.status(200); // OK
-        res.json(client);
+        res.json({editado: "Se editó con exito"});
       });
     });
   } else {

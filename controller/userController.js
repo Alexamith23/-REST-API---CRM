@@ -252,7 +252,7 @@ function validarToken (req, res, next) {
       }
     }else{
       res.send({
-        error: "Token inválidoooo "
+        error: "Token invál "
       });
     }
   } else {

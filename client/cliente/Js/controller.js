@@ -93,6 +93,9 @@ function cargar_clientes() {
       let arreglo = clientes.clientes;
       var d = '';
       for (var i = 0; i < arreglo.length; i++) {
+        let name =arreglo[i].nombre;
+        var mi_variable = 'Un \'texto\' cualquiera';
+        console.log(mi_variable);
         d += '<tr>' +
           '<td>' + arreglo[i]._id + '</td>' +
           '<td>' + arreglo[i].nombre + '</td>' +
@@ -101,10 +104,9 @@ function cargar_clientes() {
           '<td>' + arreglo[i].direccion + '</td>' +
           '<td>' + arreglo[i].telefono + '</td>' +
           '<td>' + arreglo[i].sector + '</td>' +
-          '<td> <a  href="./dashboard_user.html" class="btn btn-success" style="">E</a> <a  href="./dashboard_user.html" class="btn btn-success" style="">B</a></td>' +
+          '<td>'+ "<a  href='#' class='btn btn-success' onclick="+'cargar_datos('+'\''+arreglo[i]._id+'\''+')'+"   >E</a> <a  href='#' class='btn btn-success' style=''>B</a>"+ '</td>' +
           '</tr>';
       }
-      //document.getElementById("tabla").append(d);
       $("#tabla").append(d);
     }
   };
@@ -125,21 +127,110 @@ function registrar_clientes() {
   var web = document.getElementById("web").value;
   var dir = document.getElementById("dir").value;
   var telefono = document.getElementById("telefono").value;
+  var sector = document.getElementById("sector").value;
   var mensaje = "";
   const completed = (e) => {
-    var persona = JSON.parse(e.target.responseText);
-    if (persona.Message) {
-      mensaje = "Por favor ingrese todos los datos solicitados";
-    } else if (persona.repetido) {
-      mensaje = "El nombre de usuario registrado ya existe";
-    } else if (persona.error) {
-      console.log(persona.error);
-    } else if (persona.nombre) {
-      window.open("./html/dashboard_user.html", "_self");
+    var cliente = JSON.parse(e.target.responseText);
+    if (cliente.Unauthorized) {
+      alert("Su sessión ha caducado, por favor vuelva a iniciar sessión");
+      window.open("../index.html", "_self");
+    } else if(cliente.vacio){
+      mensaje = cliente.vacio;
+    }else if(cliente.error){
+      mensaje = cliente.error;
+    }
+    else if(cliente.client){
+      mensaje = "Registraste un cliente nuevo";
     }
     $("#modal_registro").modal("hide");
     output.innerHTML = mensaje;
     $("#sms").modal();
   };
+  const error = () => console.log(this.responseText);
+  let persona = JSON.parse(localStorage.getItem("usuarios"));
+  const ajaxRequest = new XMLHttpRequest();
+  ajaxRequest.addEventListener("load", completed);
+  ajaxRequest.addEventListener("error", error);
+  ajaxRequest.open("POST","http://localhost:3000/CRM/clientes?id_user=1&nombre="+
+  nombre+"&ced_juridica="+juridica+"&pagina_web="+web+"&direccion="+dir+"&telefono="+telefono+
+  "&sector="+sector);
+  ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
+  ajaxRequest.send();
 
+}
+
+function cargar_datos(_id) {
+  var mensaje = "";
+  const completed = (e) => {
+    var clientes = JSON.parse(e.target.responseText);
+    if (clientes.Unauthorized) {
+      alert("Su sessión ha caducado, por favor vuelva a iniciar sessión");
+      window.open("../index.html", "_self");
+    } else if(clientes.no_clientes){
+      document.getElementById("admin").innerText = "¡¡¡Vaya al parecer no tienes clientes!!!";
+      
+    }else if(clientes.error){
+      alert(clientes.error);
+    }
+    else if(clientes){
+      document.getElementById("idE").value = clientes._id;
+      document.getElementById("nombreE").value = clientes.nombre;
+      document.getElementById("juridicaE").value  = clientes.ced_juridica;
+      document.getElementById("webE").value = clientes.pagina_web;
+      document.getElementById("dirE").value  = clientes.direccion;
+      document.getElementById("telefonoE").value  = clientes.telefono;
+      document.getElementById("sectorE").value  = clientes.sector;
+      $("#modal_editar").modal();
+    }
+  };
+    const error = () => console.log(this.responseText);
+    let persona = JSON.parse(localStorage.getItem("usuarios"));
+    const ajaxRequest = new XMLHttpRequest();
+    ajaxRequest.addEventListener("load", completed);
+    ajaxRequest.addEventListener("error", error);
+    ajaxRequest.open("GET","http://localhost:3000/CRM/clientes?id_user=1&id="+_id);
+    ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
+    ajaxRequest.send();
+
+}
+
+
+function editar_clientes() {
+  var id = document.getElementById("idE").value;
+  var nombre = document.getElementById("nombreE").value;
+  var juridica = document.getElementById("juridicaE").value;
+  var web = document.getElementById("webE").value;
+  var dir = document.getElementById("dirE").value;
+  var telefono = document.getElementById("telefonoE").value;
+  var sector = document.getElementById("sectorE").value;
+  var mensaje = "";
+  const completed = (e) => {
+    var cliente = JSON.parse(e.target.responseText);
+    if (cliente.Unauthorized) {
+      alert("Su sessión ha caducado, por favor vuelva a iniciar sessión");
+      window.open("../index.html", "_self");
+    } else if(cliente.vacio){
+      mensaje = cliente.vacio;
+    }else if(cliente.error){
+      mensaje = cliente.error;
+    }
+    else if(cliente.editado){
+      mensaje = cliente.editado;
+      window.open("../html/clientes.html", "_self");
+    }
+    $("#modal_registro").modal("hide");
+    output.innerHTML = mensaje;
+    $("#sms").modal();
+  };
+  const error = () => console.log(this.responseText);
+  let persona = JSON.parse(localStorage.getItem("usuarios"));
+  const ajaxRequest = new XMLHttpRequest();
+  ajaxRequest.addEventListener("load", completed);
+  ajaxRequest.addEventListener("error", error);
+  ajaxRequest.open("PATCH","http://localhost:3000/CRM/clientes?id_user=1&id="+id+"&nombre="+
+  nombre+"&ced_juridica="+juridica+"&pagina_web="+web+"&direccion="+dir+"&telefono="+telefono+
+  "&sector="+sector);
+  ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
+  ajaxRequest.send();
+  
 }

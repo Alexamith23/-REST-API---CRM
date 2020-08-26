@@ -44,9 +44,9 @@ router.post("/CRM/userLogin",userAutenticate);
 router.delete("/CRM/logout",destroySession);
 
 //Listen to the clientes request
-router.post("/CRM/clientes", clientPost);
+router.post("/CRM/clientes", validarToken, clientPost);
 router.get("/CRM/clientes",validarToken, clientGet);
-router.patch("/CRM/clientes", clientPatch);
+router.patch("/CRM/clientes", validarToken, clientPatch);
 router.delete("/CRM/clientes", clientDelete);
 
 //Listen to the contacts request

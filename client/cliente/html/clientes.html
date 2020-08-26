@@ -3,19 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    />
-    
-    <link
-      rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link href="../vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="../css/style.css" />
     <title>Clientes</title>
   </head>
   <body onload="cargar_clientes()">
-
+     <!-- Mensaje -->
+     <div class="modal" tabindex="-1" role="dialog" id="sms">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Mensaje</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="mensaje">
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">aceptar</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
@@ -30,7 +43,8 @@
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="nombre">Nombre</label>
-                    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre">
+                    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
+                    required data-validation-required-message="Ingrese su nombre de usuario.">
                   </div>
                   <div class="form-group col-md-6">
                     <label for="apellido">Cedula juridica</label>
@@ -50,28 +64,80 @@
                     <input type="number" class="form-control" name="telefono" id="telefono" placeholder="Telefono">
                   </div>
                   <div class="form-group">
-                    <!-- Example split danger button -->
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary">Sector</button>
-                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Industrial</a>
-                            <a class="dropdown-item" href="#">basico</a>
-                            <a class="dropdown-item" href="#">Normal</a>
-                        </div>
-                    </div>
+                    <label for="exampleFormControlSelect1">Sector</label>
+                    <select class="form-control" id="sector">
+                      <option>Otro</option>
+                      <option>Educación</option>
+                      <option>Industria</option>
+                      <option>Agricultura</option>
+                      <option>Manufactura</option>
+                      <option>Servicios</option>
+                    </select>
                   </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                  <button type="button" class="btn btn-primary" onclick="registrar_cliente()">Registrar</button>
+                  <a href="" class="btn btn-primary" onclick="registrar_clientes()">Registrar</a>
                 </div>
               </form>
             </div>
           </div>
         </div>
     </div> 
+    <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">CRM Editar Clientes</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="POST">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="nombre">Nombre</label>
+                  <input type="text" class="form-control" name="nombreE" id="nombreE" placeholder="Nombre"
+                  required data-validation-required-message="Ingrese su nombre de usuario.">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="apellido">Cedula juridica</label>
+                  <input type="text" class="form-control" name="juridicaE" id="juridicaE" placeholder="Cedula juridica">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="usuario">Pagina web</label>
+                <input type="text" class="form-control" name="webE" id="webE" placeholder="Pagina web">
+              </div>
+              <div class="form-group">
+                <label for="clave">Dirección</label>
+                <input type="text" class="form-control" name="dirE" id="dirE" placeholder="Dirección">
+                <input type="hidden" class="form-control" name="idE" id="idE" placeholder="Dirección">
+              </div>
+              <div class="form-group">
+                  <label for="clave">Telefono</label>
+                  <input type="number" class="form-control" name="telefonoE" id="telefonoE" placeholder="Telefono">
+                </div>
+                <div class="form-group">
+                  <label for="exampleFormControlSelect1">Sector</label>
+                  <select class="form-control" id="sectorE">
+                    <option>Otro</option>
+                    <option>Educación</option>
+                    <option>Industria</option>
+                    <option>Agricultura</option>
+                    <option>Manufactura</option>
+                    <option>Servicios</option>
+                  </select>
+                </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <a class="btn btn-primary" onclick="editar_clientes()" href="#">Editar</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  </div> 
     <div class="container-fluid">
       <hr />
       <center><h1 class="x"><i class="fa fa-diamond fa-1x" aria-hidden="true" style="color: black;">
@@ -104,6 +170,7 @@
         <div class="col-sm-1"></div>
       </div>
     </div>
+    
     <!-- JS, Popper.js, and jQuery -->
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
