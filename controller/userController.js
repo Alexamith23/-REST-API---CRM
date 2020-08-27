@@ -252,7 +252,7 @@ function validarToken (req, res, next) {
       }
     }else{
       res.send({
-        error: "Token invál "
+        Unauthorized: "Token inválido "
       });
     }
   } else {
@@ -285,7 +285,6 @@ const destroySession = (req, res) => {
  * @param {Token del usuario} token 
  */
 function validar_que_el_token_sea_válido(token) {
-  console.log("MiToken: "+token);
   let existe = true;
   jwt.verify(token,jwtKey, (err,data)=>{
     if (err) {

@@ -34,6 +34,7 @@ function validar_cedula_juridica(cedula, client, res) {
  * @param {*} res
  */
 const clientPost = (req, res) => {
+  console.log("A quien pertenece este cliente "+req.query.id_user);
   if (
     req.query &&
     req.query.id_user &&
@@ -84,12 +85,8 @@ const clientGet = (req, res) => {
         res.json({ no_clientes: "Por el momento no tiene clientes registrados" });
       }
     });
-  } 
-  
-  
-  
-  else if(req.query && req.query.id_user){
-    console.log("Tambien aqui");
+  } else if(req.query && req.query.id_user){
+    console.log("Tambien aquiiiiiii pertenece a "+req.query.id_user);
       Cliente.find({user:req.query.id_user}, function (err, client) {
         if (err) {
           res.status(404);
@@ -97,6 +94,7 @@ const clientGet = (req, res) => {
           res.json({ error: "Client doesnt exist" });
         }
         if (client.length > 0) {
+          console.log(client);
           res.json({ clientes: client});
           return;
         }else{
@@ -173,7 +171,7 @@ const clientDelete = (req, res) => {
       if (err) {
         res.status(500);
         console.log("error while queryting the client", err);
-        res.json({ error: "client doesnt exist" });
+        res.json({ error: "El cliente no existe" });
       }
       //if the task exists
       if (client) {
@@ -181,14 +179,15 @@ const clientDelete = (req, res) => {
           if (err) {
             res
               .status(500)
-              .json({ message: "There was an error deleting the client" });
-          }
+              .json({ error: "Ocurrió un error borrando el cliente" });
+          }else{
           res.status(204).json({ message: "All is ok" });
+        }
         });
       } else {
         res.status(404);
         console.log("error while queryting the client", err);
-        res.json({ error: "client doesnt exist" });
+        res.json({ error: "El cliente no existe" });
       }
     });
   } else {

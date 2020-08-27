@@ -1,4 +1,5 @@
 let output = document.getElementById("mensaje");
+
 function registrar_usuario() {
   var nombre = document.getElementById("nombre").value;
   var apellido = document.getElementById("apellido").value;
@@ -104,7 +105,7 @@ function cargar_clientes() {
           '<td>' + arreglo[i].direccion + '</td>' +
           '<td>' + arreglo[i].telefono + '</td>' +
           '<td>' + arreglo[i].sector + '</td>' +
-          '<td>'+ "<a  href='#' class='btn btn-success' onclick="+'cargar_datos('+'\''+arreglo[i]._id+'\''+')'+"   >E</a> <a  href='#' class='btn btn-success' style=''>B</a>"+ '</td>' +
+          '<td>'+ "<a  href='#' class='btn btn-success' onclick="+'cargar_datos('+'\''+arreglo[i]._id+'\''+')'+">E</a> <a  href='#' class='btn btn-success' onclick="+'borrar_clientes('+'\''+arreglo[i]._id+'\''+')'+">B</a>"+ '</td>' +
           '</tr>';
       }
       $("#tabla").append(d);
@@ -112,6 +113,10 @@ function cargar_clientes() {
   };
   const error = () => console.log(this.responseText);
   let persona = JSON.parse(localStorage.getItem("usuarios"));
+  if(persona === null){
+    persona = [{"usuario_token":"undefined"}];
+  }
+  
   const ajaxRequest = new XMLHttpRequest();
   ajaxRequest.addEventListener("load", completed);
   ajaxRequest.addEventListener("error", error);
@@ -148,6 +153,9 @@ function registrar_clientes() {
   };
   const error = () => console.log(this.responseText);
   let persona = JSON.parse(localStorage.getItem("usuarios"));
+  if(persona === null){
+    persona = [{"usuario_token":"undefined"}];
+  }
   const ajaxRequest = new XMLHttpRequest();
   ajaxRequest.addEventListener("load", completed);
   ajaxRequest.addEventListener("error", error);
@@ -185,6 +193,9 @@ function cargar_datos(_id) {
   };
     const error = () => console.log(this.responseText);
     let persona = JSON.parse(localStorage.getItem("usuarios"));
+    if(persona === null){
+      persona = [{"usuario_token":"undefined"}];
+    }
     const ajaxRequest = new XMLHttpRequest();
     ajaxRequest.addEventListener("load", completed);
     ajaxRequest.addEventListener("error", error);
@@ -224,12 +235,37 @@ function editar_clientes() {
   };
   const error = () => console.log(this.responseText);
   let persona = JSON.parse(localStorage.getItem("usuarios"));
+  if(persona === null){
+    persona = [{"usuario_token":"undefined"}];
+  }
   const ajaxRequest = new XMLHttpRequest();
   ajaxRequest.addEventListener("load", completed);
   ajaxRequest.addEventListener("error", error);
   ajaxRequest.open("PATCH","http://localhost:3000/CRM/clientes?id_user=1&id="+id+"&nombre="+
   nombre+"&ced_juridica="+juridica+"&pagina_web="+web+"&direccion="+dir+"&telefono="+telefono+
   "&sector="+sector);
+  ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
+  ajaxRequest.send();
+  
+}
+
+function borrar_clientes(id) {
+  var mensaje = "Se eliminó con exito";
+  const completed = (e) => {
+    $("#modal_registro").modal("hide");
+    output.innerHTML = mensaje;
+    $("#sms").modal();
+    window.open("../html/clientes.html", "_self");
+  };
+  const error = () => console.log(this.responseText);
+  let persona = JSON.parse(localStorage.getItem("usuarios"));
+  if(persona === null){
+    persona = [{"usuario_token":"undefined"}];
+  }
+  const ajaxRequest = new XMLHttpRequest();
+  ajaxRequest.addEventListener("load", completed);
+  ajaxRequest.addEventListener("error", error);
+  ajaxRequest.open("DELETE","http://localhost:3000/CRM/clientes?id_user=1&id="+id);
   ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
   ajaxRequest.send();
   
