@@ -86,7 +86,6 @@ const clientGet = (req, res) => {
       }
     });
   } else if(req.query && req.query.id_user){
-    console.log("Tambien aquiiiiiii pertenece a "+req.query.id_user);
       Cliente.find({user:req.query.id_user}, function (err, client) {
         if (err) {
           res.status(404);

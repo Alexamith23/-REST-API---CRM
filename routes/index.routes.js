@@ -47,13 +47,13 @@ router.delete("/CRM/logout",destroySession);
 router.post("/CRM/clientes", validarToken, clientPost);
 router.get("/CRM/clientes",validarToken, clientGet);
 router.patch("/CRM/clientes", validarToken, clientPatch);
-router.delete("/CRM/clientes", clientDelete);
+router.delete("/CRM/clientes", validarToken,clientDelete);
 
 //Listen to the contacts request
-router.post("/CRM/contacs", contactPost);
-router.get("/CRM/contacs", contactGet);
-router.patch("/CRM/contacs", contactPatch);
-router.delete("/CRM/contacs", contactDelete);
+router.post("/CRM/contacs", validarToken,contactPost);
+router.get("/CRM/contacs", validarToken,contactGet);
+router.patch("/CRM/contacs", validarToken,contactPatch);
+router.delete("/CRM/contacs", validarToken,contactDelete);
 
 //Listen to the reuniones request
 router.post("/CRM/reuniones",reunionesPost);

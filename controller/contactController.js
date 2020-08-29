@@ -8,20 +8,21 @@ const Contact = require("../model/contactModel.js");
  */
 const contactPost = (req, res) => {
   if (
-    req.body.client &&
-    req.body.nombre &&
-    req.body.apellido &&
-    req.body.correo &&
-    req.body.telefono &&
-    req.body.puesto
+    req.query.client &&
+    req.query.nombre &&
+    req.query.apellido &&
+    req.query.correo &&
+    req.query.telefono &&
+    req.query.puesto
   ) {
     var contact = new Contact();
-    contact.client = req.body.client;
-    contact.nombre = req.body.nombre;
-    contact.apellido = req.body.apellido;
-    contact.correo = req.body.correo;
-    contact.telefono = req.body.telefono;
-    contact.puesto = req.body.puesto;
+    contact.client = req.query.client;
+    contact.nombre = req.query.nombre;
+    contact.apellido = req.query.apellido;
+    contact.correo = req.query.correo;
+    contact.telefono = req.query.telefono;
+    contact.puesto = req.query.puesto;
+    contact.usuario_id = req.query.id_user;
     contact.save(function (err) {
       if (err) {
         res.status(422);
@@ -34,7 +35,7 @@ const contactPost = (req, res) => {
       res.header({
         location: `http://localhost:3000/CRM/contacs?id=${contact.id}`,
       });
-      res.json(contact);
+      res.json({contacto:contact});
     });
   } else {
     res.json({
@@ -49,29 +50,28 @@ const contactPost = (req, res) => {
  */
 const contactGet = (req, res) => {
   // if an specific user is required
-  if (req.query && req.query.client_id) {
-    Contact.find({ client: req.query.client_id }, function (err, contact) {
+  if (req.query && req.query.id) {
+    console.log("Here");
+    Contact.findById(req.query.id, function (err, contact) {
+        res.json(contact);
+    });
+  }else if (req.query && req.query.id_user) {
+    console.log("Here");
+    Contact.find({ usuario_id: req.query.id_user }, function (err, contact) {
       if (err) {
         res.status(404);
         console.log("error while queryting the client", err);
-        res.json({ error: "Lo siento no tiene contactos asignados" });
+        res.json({ vacio: "Lo siento no tiene contactos asignados" });
       }
-      if (contact.length == 0) {
-        res.json({ error: "Lo siento no tiene contactos asignados" });
+      if (contact === null) {
+        res.json({ vacio: "Lo siento no tiene contactos asignados" });
         return;
+      }else{
+        res.json({contactos:contact});
       }
-      res.json(contact);
+      
     });
-  } else {
-    // get all students
-    Contact.find(function (err, contact) {
-      if (err) {
-        res.status(422);
-        res.json({ error: err });
-      }
-      res.json(contact);
-    });
-  }
+  } 
 };
 /**
  * Edita un cliente
@@ -79,6 +79,7 @@ const contactGet = (req, res) => {
  * @param {*} res
  */
 const contactPatch = (req, res) => {
+  console.log("Holaaaaaaaaaaaaaaaaa" +req.query.id);
   if (req.query && req.query.id) {
     Contact.findById(req.query.id, function (err, contact) {
       if (err) {
@@ -87,12 +88,13 @@ const contactPatch = (req, res) => {
         res.json({ error: "contact doesnt exist edit" });
       }
       // update the user object (patch)
-      contact.nombre = req.body.nombre ? req.body.nombre : nombre.nombre;
-      contact.apellido = req.body.apellido ? req.body.apellido : contact.apellido;
-      contact.telefono = req.body.telefono ? req.body.telefono : contact.telefono;
-      contact.correo = req.body.correo ? req.body.correo : contact.correo;
-      contact.telefono = req.body.telefono ? req.body.telefono : contact.telefono;
-      contact.puesto = req.body.puesto ? req.body.puesto : contact.puesto;
+      contact.client = req.query.client ? req.query.client : client.client;
+      contact.nombre = req.query.nombre ? req.query.nombre : nombre.nombre;
+      contact.apellido = req.query.apellido ? req.query.apellido : contact.apellido;
+      contact.telefono = req.query.telefono ? req.query.telefono : contact.telefono;
+      contact.correo = req.query.correo ? req.query.correo : contact.correo;
+      contact.telefono = req.query.telefono ? req.query.telefono : contact.telefono;
+      contact.puesto = req.query.puesto ? req.query.puesto : contact.puesto;
 
       // update the user object (put)
       contact.save(function (err) {
@@ -108,6 +110,7 @@ const contactPatch = (req, res) => {
       });
     });
   } else {
+    console.log("no lo encuentra");
     res.status(404);
     res.json({ error: "Contact doesnt exist aja" });
   }
@@ -121,11 +124,11 @@ const contactPatch = (req, res) => {
 const contactDelete = (req, res) => {
   // if an specific task is required
   if (req.query && req.query.id) {
-      
+      console.log("Holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+req.query.id);
     Contact.findById(req.query.id, function (err, contact) {
       if (err) {
         res.status(500);
-        console.log("error while queryting the contact", err);
+        console.log("error while queryting the contact 1", err);
         res.json({ error: "contact doesnt exist" });
       }
       //if the task exists
@@ -140,7 +143,7 @@ const contactDelete = (req, res) => {
         });
       } else {
         res.status(404);
-        console.log("error while queryting the contact", err);
+        console.log("error while queryting the contact 2", err);
         res.json({ error: "contact doesnt exist" });
       }
     });

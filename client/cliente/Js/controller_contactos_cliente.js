@@ -1,82 +1,8 @@
 let output = document.getElementById("mensaje");
 
-function registrar_usuario() {
-  var nombre = document.getElementById("nombre").value;
-  var apellido = document.getElementById("apellido").value;
-  var usuario = document.getElementById("usuario").value;
-  var clave = document.getElementById("clave").value;
-  var mensaje = "";
-  const completed = (e) => {
-    var persona = JSON.parse(e.target.responseText);
-    if (persona.Message) {
-      mensaje = "Por favor ingrese todos los datos solicitados";
-    } else if (persona.repetido) {
-      mensaje = "El nombre de usuario registrado ya existe";
-    } else if (persona.error) {
-      console.log(persona.error);
-    } else if (persona.nombre) {
-      mensaje = "Muchas gracias por registrarte!! Ahora inicia sessión para empezar";
-      window.open("index.html", "_self");
-    }
-    $("#modal_registro").modal("hide");
-    output.innerHTML = mensaje;
-    $("#sms").modal();
-  };
-
-  const error = () => console.log(this.responseText);
-
-  const ajaxRequest = new XMLHttpRequest();
-  ajaxRequest.addEventListener("load", completed);
-  ajaxRequest.addEventListener("error", error);
-  ajaxRequest.open(
-    "POST",
-    "http://localhost:3000/CRM/users?nombre=" +
-      nombre +
-      "&apellido=" +
-      apellido +
-      "&usuario=" +
-      usuario +
-      "&clave=" +
-      clave
-  );
-  ajaxRequest.send();
-}
-
-function autenticar() {
-  var usuario = document.getElementById("inputEmail3").value;
-  var clave = document.getElementById("inputPassword3").value;
-  var mensaje = "";
-  const completed = (e) => {
-    var persona = JSON.parse(e.target.responseText);
-    if (persona.vacio) {
-      mensaje = "Por favor ingrese todos los datos solicitados";
-    } else if (persona.repetido) {
-      mensaje = "Nombre de usuario o contraseña incorrecto";
-    } else if (persona.token) {
-      var usuario = [{"usuario_token":persona.token}];
-      localStorage.setItem("usuarios", JSON.stringify(usuario)); 
-      window.open("./html/dashboard_user.html", "_self");
-    }
-    if (mensaje != "") {
-      $("#exampleModalCenter").modal("hide");
-      output.innerHTML = mensaje;
-      $("#sms").modal();
-    }
-  };
-
-  const error = () => console.log(this.responseText);
-
-  const ajaxRequest = new XMLHttpRequest();
-  ajaxRequest.addEventListener("load", completed);
-  ajaxRequest.addEventListener("error", error);
-  ajaxRequest.open(
-    "POST",
-    "http://localhost:3000/CRM/userLogin?usuario=" + usuario + "&clave=" + clave
-  );
-  ajaxRequest.send();
-}
 
 function cargar_clientes() {
+  console.log("Entra");
   const completed = (e) => {
     var clientes = JSON.parse(e.target.responseText);
     if (clientes.Unauthorized) {
@@ -92,19 +18,10 @@ function cargar_clientes() {
       let arreglo = clientes.clientes;
       var d = '';
       for (var i = 0; i < arreglo.length; i++) {
-        let name =arreglo[i].nombre;
-        d += '<tr>' +
-          '<td>' + arreglo[i]._id + '</td>' +
-          '<td>' + arreglo[i].nombre + '</td>' +
-          '<td>' + arreglo[i].ced_juridica + '</td>' +
-          '<td>' + arreglo[i].pagina_web + '</td>' +
-          '<td>' + arreglo[i].direccion + '</td>' +
-          '<td>' + arreglo[i].telefono + '</td>' +
-          '<td>' + arreglo[i].sector + '</td>' +
-          '<td>'+ "<a  href='#' class='btn btn-success' onclick="+'cargar_datos('+'\''+arreglo[i]._id+'\''+')'+">E</a> <a  href='#' class='btn btn-success' onclick="+'borrar_clientes('+'\''+arreglo[i]._id+'\''+')'+">B</a>"+ '</td>' +
-          '</tr>';
+        d += '<option>'+arreglo[i].nombre+'</option>';
       }
-      $("#tabla").append(d);
+      $("#cliente").append(d);
+      $("#clienteE").append(d);
     }
   };
   const error = () => console.log(this.responseText);
@@ -121,26 +38,70 @@ function cargar_clientes() {
   ajaxRequest.send();
 }
 
-function registrar_clientes() {
+function cargar_contactos() {
+  const completed = (e) => {
+    var clientes = JSON.parse(e.target.responseText);
+    if (clientes.Unauthorized) {
+      alert("Su sessión ha caducado, por favor vuelva a iniciar sessión");
+      window.open("../index.html", "_self");
+    } else if(clientes.vacio){
+      document.getElementById("admin").innerText = "¡¡¡Vaya al parecer no tienes clientes!!!";
+    }else if(clientes.error){
+      alert(clientes.error);
+    }
+    else if(clientes.contactos){
+      let arreglo = clientes.contactos;
+      var d = '';
+      for (var i = 0; i < arreglo.length; i++) {
+        let name =arreglo[i].nombre;
+        d += '<tr>' +
+          '<td>' + arreglo[i]._id + '</td>' +
+          '<td>' + arreglo[i].client + '</td>' +
+          '<td>' + arreglo[i].nombre + '</td>' +
+          '<td>' + arreglo[i].apellido + '</td>' +
+          '<td>' + arreglo[i].correo + '</td>' +
+          '<td>' + arreglo[i].telefono + '</td>' +
+          '<td>' + arreglo[i].puesto + '</td>' +
+          '<td>'+ "<a  href='#' class='btn btn-success' onclick="+'cargar_datos('+'\''+arreglo[i]._id+'\''+')'+">E</a> <a  href='#' class='btn btn-success' onclick="+'borrar_contactos('+'\''+arreglo[i]._id+'\''+')'+">B</a>"+ '</td>' +
+          '</tr>';
+      }
+      $("#tabla").append(d);
+    }
+  };
+  const error = () => console.log(this.responseText);
+  let persona = JSON.parse(localStorage.getItem("usuarios"));
+  if(persona === null){
+    persona = [{"usuario_token":"undefined"}];
+  }
+  const ajaxRequest = new XMLHttpRequest();
+  ajaxRequest.addEventListener("load", completed);
+  ajaxRequest.addEventListener("error", error);
+  ajaxRequest.open("GET","http://localhost:3000/CRM/contacs?id_user=1");
+  ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
+  ajaxRequest.send();
+}
+
+function registrar_contactos() {
+  var cliente = document.getElementById("cliente").value;
   var nombre = document.getElementById("nombre").value;
-  var juridica = document.getElementById("juridica").value;
-  var web = document.getElementById("web").value;
-  var dir = document.getElementById("dir").value;
+  var apellidos = document.getElementById("apellido").value;
+  var correo = document.getElementById("correo").value;
   var telefono = document.getElementById("telefono").value;
-  var sector = document.getElementById("sector").value;
+  var puesto = document.getElementById("puesto").value;
+
   var mensaje = "";
   const completed = (e) => {
     var cliente = JSON.parse(e.target.responseText);
     if (cliente.Unauthorized) {
       alert("Su sessión ha caducado, por favor vuelva a iniciar sessión");
       window.open("../index.html", "_self");
-    } else if(cliente.vacio){
-      mensaje = cliente.vacio;
+    } else if(cliente.Message){
+      mensaje = cliente.Message;
     }else if(cliente.error){
       mensaje = cliente.error;
     }
-    else if(cliente.client){
-      mensaje = "Registraste un cliente nuevo";
+    else if(cliente.contacto){
+      mensaje = "Registraste un contacto nuevo";
     }
     if(mensaje != ""){
       $("#modal_registro").modal("hide");
@@ -156,16 +117,15 @@ function registrar_clientes() {
   const ajaxRequest = new XMLHttpRequest();
   ajaxRequest.addEventListener("load", completed);
   ajaxRequest.addEventListener("error", error);
-  ajaxRequest.open("POST","http://localhost:3000/CRM/clientes?id_user=1&nombre="+
-  nombre+"&ced_juridica="+juridica+"&pagina_web="+web+"&direccion="+dir+"&telefono="+telefono+
-  "&sector="+sector);
+  ajaxRequest.open("POST","http://localhost:3000/CRM/contacs?id_user=1&client="+
+  cliente+"&nombre="+nombre+"&apellido="+apellidos+"&correo="+correo+"&telefono="+telefono+
+  "&puesto="+puesto);
   ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
   ajaxRequest.send();
 
 }
 
 function cargar_datos(_id) {
-  var mensaje = "";
   const completed = (e) => {
     var clientes = JSON.parse(e.target.responseText);
     if (clientes.Unauthorized) {
@@ -179,12 +139,12 @@ function cargar_datos(_id) {
     }
     else if(clientes){
       document.getElementById("idE").value = clientes._id;
+      document.getElementById("clienteE").value = clientes.client;
       document.getElementById("nombreE").value = clientes.nombre;
-      document.getElementById("juridicaE").value  = clientes.ced_juridica;
-      document.getElementById("webE").value = clientes.pagina_web;
-      document.getElementById("dirE").value  = clientes.direccion;
+      document.getElementById("apellidoE").value  = clientes.apellido;
+      document.getElementById("correoE").value = clientes.correo;
       document.getElementById("telefonoE").value  = clientes.telefono;
-      document.getElementById("sectorE").value  = clientes.sector;
+      document.getElementById("puestoE").value  = clientes.puesto;
       $("#modal_editar").modal();
     }
   };
@@ -196,23 +156,24 @@ function cargar_datos(_id) {
     const ajaxRequest = new XMLHttpRequest();
     ajaxRequest.addEventListener("load", completed);
     ajaxRequest.addEventListener("error", error);
-    ajaxRequest.open("GET","http://localhost:3000/CRM/clientes?id_user=1&id="+_id);
+    ajaxRequest.open("GET","http://localhost:3000/CRM/contacs?id_user=1&id="+_id);
     ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
     ajaxRequest.send();
 
 }
 
-function editar_clientes() {
+function editar_contactos() {
   var id = document.getElementById("idE").value;
-  var nombre = document.getElementById("nombreE").value;
-  var juridica = document.getElementById("juridicaE").value;
-  var web = document.getElementById("webE").value;
-  var dir = document.getElementById("dirE").value;
-  var telefono = document.getElementById("telefonoE").value;
-  var sector = document.getElementById("sectorE").value;
+  var cliente = document.getElementById("clienteE").value;
+  var nombre =    document.getElementById("nombreE").value;
+  var apellido =    document.getElementById("apellidoE").value;
+  var correo =    document.getElementById("correoE").value;
+  var telefono =    document.getElementById("telefonoE").value;
+  var puesto =    document.getElementById("puestoE").value;
   var mensaje = "";
   const completed = (e) => {
     var cliente = JSON.parse(e.target.responseText);
+    
     if (cliente.Unauthorized) {
       alert("Su sessión ha caducado, por favor vuelva a iniciar sessión");
       window.open("../index.html", "_self");
@@ -221,9 +182,9 @@ function editar_clientes() {
     }else if(cliente.error){
       mensaje = cliente.error;
     }
-    else if(cliente.editado){
+    else if(cliente){
       mensaje = cliente.editado;
-      window.open("../html/clientes.html", "_self");
+      window.open("../html/contactos.html", "_self");
     }
     $("#modal_registro").modal("hide");
     output.innerHTML = mensaje;
@@ -237,21 +198,21 @@ function editar_clientes() {
   const ajaxRequest = new XMLHttpRequest();
   ajaxRequest.addEventListener("load", completed);
   ajaxRequest.addEventListener("error", error);
-  ajaxRequest.open("PATCH","http://localhost:3000/CRM/clientes?id_user=1&id="+id+"&nombre="+
-  nombre+"&ced_juridica="+juridica+"&pagina_web="+web+"&direccion="+dir+"&telefono="+telefono+
-  "&sector="+sector);
+  ajaxRequest.open("PATCH","http://localhost:3000/CRM/contacs?id_user=1&id="+id+"&client="+
+  cliente+"&nombre="+nombre+"&apellido="+apellido+"&correo="+correo+"&telefono="+telefono+
+  "&puesto="+puesto);
   ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
   ajaxRequest.send();
   
 }
 
-function borrar_clientes(id) {
+function borrar_contactos(id) {
   if(confirmar_para_borrar()){
     const completed = (e) => {
       $("#modal_registro").modal("hide");
-      output.innerHTML = mensaje;
+      output.innerHTML = "Se borró el contacto";
       $("#sms").modal();
-      window.open("../html/clientes.html", "_self");
+      window.open("../html/contactos.html", "_self");
     };
     const error = () => console.log(this.responseText);
     let persona = JSON.parse(localStorage.getItem("usuarios"));
@@ -261,7 +222,7 @@ function borrar_clientes(id) {
     const ajaxRequest = new XMLHttpRequest();
     ajaxRequest.addEventListener("load", completed);
     ajaxRequest.addEventListener("error", error);
-    ajaxRequest.open("DELETE","http://localhost:3000/CRM/clientes?id_user=1&id="+id);
+    ajaxRequest.open("DELETE","http://localhost:3000/CRM/contacs?id_user=1&id="+id);
     ajaxRequest.setRequestHeader("authorization",persona[0].usuario_token)
     ajaxRequest.send();
   }

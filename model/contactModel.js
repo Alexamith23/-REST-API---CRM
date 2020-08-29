@@ -7,7 +7,8 @@ const contact = new Schema({
   apellido: { type: String },
   correo: { type: String },
   telefono: { type: String },
-  puesto: { type: String }
+  puesto: { type: String },
+  usuario_id: { type: String }
 });
 
 module.exports = mongoose.model("contacts", contact);
