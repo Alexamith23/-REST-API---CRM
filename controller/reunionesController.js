@@ -7,16 +7,21 @@ const Reunion = require("../model/reunionesModel.js");
  */
 const reunionesPost = (req, res) => {
   if (
-    req.body.titulo &&
-    req.body.dia_hora &&
-    req.body.usuario &&
-    req.body.virtual
+    req.query.titulo &&
+    req.query.fecha &&
+    req.query.hora &&
+    req.query.usuario &&
+    req.query.virtual&&
+    req.query.cliente 
   ) {
     var reunion = new Reunion();
-    reunion.titulo = req.body.titulo;
-    reunion.dia_hora = req.body.dia_hora;
-    reunion.usuario = req.body.usuario;
-    reunion.virtual = req.body.virtual;
+    reunion.titulo = req.query.titulo;
+    reunion.dia_hora = req.query.fecha;
+    reunion.hora = req.query.hora;
+    reunion.usuario = req.query.usuario;
+    reunion.virtual = req.query.virtual;
+    reunion.cliente = req.query.cliente;
+    reunion.usuario_id = req.query.id_user;
     reunion.save(function (err) {
       if (err) {
         res.status(422);
@@ -29,7 +34,7 @@ const reunionesPost = (req, res) => {
       res.header({
         location: `http://localhost:3000/CRM/reuniones?id=${reunion.id}`,
       });
-      res.json(reunion);
+      res.json({meet:reunion});
     });
   } else {
     res.json({
@@ -43,36 +48,30 @@ const reunionesPost = (req, res) => {
  * @param {*} res
  */
 const reunionesGet = (req, res) => {
-  // obtine todas las reuniones relacionadas con un usuario
-  if (req.query && req.query.usuario_id) {
-    Reunion.find({ usuario: req.query.usuario_id }, function (err, reunion) {
+  // if an specific user is required
+  if (req.query && req.query.id) {
+    Reunion.findById(req.query.id, function (err, contact) {
+        res.json(contact);
+    });
+  }
+  else if (req.query && req.query.id_user) {
+    console.log("Entra aquiii");
+    Reunion.find({ usuario_id: req.query.id_user }, function (err, contact) {
+      console.log(contact);
       if (err) {
         res.status(404);
         console.log("error while queryting the client", err);
-        res.json({ error: "Lo siento no tiene reunion asignados" });
+        res.json({ vacio: "Lo siento no tiene contactos asignados" });
       }
-      if (reunion.length == 0) {
-        res.json({ error: "Lo siento no tiene reunion asignados" });
+      if (contact.length == 0) {
+        res.json({ vacio: "Lo siento no tiene contactos asignados" });
         return;
+      }else{
+        res.json({meet:contact});
       }
-      res.json(reunion);
+      
     });
-  } else if (req.query && req.query._id) {
-    // obtiene uno en especifico con el id de la reunion
-    Reunion.findById(req.query._id, function (err, reunion) {
-      if (err) {
-        res.status(422);
-        res.json({ error: err });
-      }
-      if (reunion.length == 0) {
-        res.json({ error: "Lo siento no tiene reunion asignados" });
-        return;
-      }
-      res.json(reunion);
-    });
-  } else {
-    res.json({ error: "Por favor ingrese los datos" });
-  }
+  } 
 };
 // /**
 //  * Edita un cliente
@@ -80,25 +79,23 @@ const reunionesGet = (req, res) => {
 //  * @param {*} res
 //  */
 const reunionesPatch = (req, res) => {
+  console.log("Entraaaaaaaaaaaaaaa"+req.query.id);
   if (req.query && req.query.id) {
-    Reunion.findById(req.query.id, function (err, contact) {
+    Reunion.findById(req.query.id, function (err, meet) {
       if (err) {
         res.status(404);
-        console.log("error while queryting the contact", err);
-        res.json({ error: "contact doesnt exist edit" });
+        console.log("error while queryting the meet", err);
+        res.json({ error: "Meet doesnt exist edit" });
       }
       // update the user object (patch)
-      contact.titulo = req.body.titulo ? req.body.titulo : contact.titulo;
-      contact.dia_hora = req.body.dia_hora
-        ? req.body.dia_hora
-        : contact.dia_hora;
-
-      contact.virtual = req.body.virtual
-        ? req.body.virtual
-        : contact.virtual;
-
+      meet.titulo = req.query.titulo ? req.query.titulo : meet.titulo;
+      meet.dia_hora = req.query.fecha ? req.query.fecha : meet.dia_hora;
+      meet.hora = req.query.hora ? req.query.hora : meet.hora;
+      meet.virtual = req.query.virtual ? req.query.virtual : meet.virtual;
+      meet.cliente = req.query.cliente ? req.query.cliente : meet.cliente;
+      meet.usuario = req.query.usuario ? req.query.usuario : meet.usuario;
       // update the user object (put)
-      contact.save(function (err) {
+      meet.save(function (err) {
         if (err) {
           res.status(422);
           console.log("error while saving the contact", err);
@@ -107,12 +104,12 @@ const reunionesPatch = (req, res) => {
           });
         }
         res.status(200); // OK
-        res.json(contact);
+        res.json(meet);
       });
     });
   } else {
     res.status(404);
-    res.json({ error: "Contact doesnt exist aja" });
+    res.json({ error: "Meet doesnt exist" });
   }
 };
 

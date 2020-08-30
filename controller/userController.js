@@ -219,7 +219,7 @@ const saveSession = function (user) {
  * @param {*} res 
  * @param {*} next 
  */
-function validarToken (req, res, next) {
+function validarToken (req, res, next) {  
   if (req.headers["authorization"]) {
     const token = req.headers['authorization'];
     if (validar_que_el_token_sea_válido(token) == true) {

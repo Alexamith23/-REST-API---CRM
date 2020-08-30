@@ -15,12 +15,14 @@ function registrar_usuario() {
     } else if (persona.error) {
       console.log(persona.error);
     } else if (persona.nombre) {
-      mensaje = "Muchas gracias por registrarte!! Ahora inicia sessión para empezar";
-      window.open("index.html", "_self");
+      $("#modal_registro").modal("hide");
+      $("#exampleModalCenter").modal();
     }
-    $("#modal_registro").modal("hide");
-    output.innerHTML = mensaje;
-    $("#sms").modal();
+    if(mensaje != ""){
+      $("#modal_registro").modal("hide");
+      output.innerHTML = mensaje;
+      $("#sms").modal();
+    }
   };
 
   const error = () => console.log(this.responseText);

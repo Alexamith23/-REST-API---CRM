@@ -56,9 +56,9 @@ router.patch("/CRM/contacs", validarToken,contactPatch);
 router.delete("/CRM/contacs", validarToken,contactDelete);
 
 //Listen to the reuniones request
-router.post("/CRM/reuniones",reunionesPost);
-router.get("/CRM/reuniones",reunionesGet);
-router.patch("/CRM/reuniones",reunionesPatch);
-router.delete("/CRM/reuniones",reunionesDelete);
+router.post("/CRM/reuniones",validarToken,reunionesPost);
+router.get("/CRM/reuniones",validarToken,reunionesGet);
+router.patch("/CRM/reuniones",validarToken,reunionesPatch);
+router.delete("/CRM/reuniones",validarToken,reunionesDelete);
 
 module.exports = router;

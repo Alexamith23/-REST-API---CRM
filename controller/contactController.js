@@ -30,12 +30,13 @@ const contactPost = (req, res) => {
         res.json({
           error: "There was an error saving the contact",
         });
-      }
-      res.status(201); //CREATED
+      }else{
+        res.status(201); //CREATED
       res.header({
         location: `http://localhost:3000/CRM/contacs?id=${contact.id}`,
       });
-      res.json({contacto:contact});
+      res.json(contact);
+      }
     });
   } else {
     res.json({
@@ -51,12 +52,12 @@ const contactPost = (req, res) => {
 const contactGet = (req, res) => {
   // if an specific user is required
   if (req.query && req.query.id) {
-    console.log("Here");
     Contact.findById(req.query.id, function (err, contact) {
+      console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         res.json(contact);
     });
   }else if (req.query && req.query.id_user) {
-    console.log("Here");
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2");
     Contact.find({ usuario_id: req.query.id_user }, function (err, contact) {
       if (err) {
         res.status(404);
@@ -124,7 +125,6 @@ const contactPatch = (req, res) => {
 const contactDelete = (req, res) => {
   // if an specific task is required
   if (req.query && req.query.id) {
-      console.log("Holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+req.query.id);
     Contact.findById(req.query.id, function (err, contact) {
       if (err) {
         res.status(500);

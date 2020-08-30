@@ -1,16 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="../css/style.css">
-    <title>Clientes</title>
-</head>
-<body>
-    <div class="container">
-        <hr>
-        <h1>Administrar reuniones</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link href="../vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="../css/style.css" />
+    <title>Reuniones</title>
+  </head>
+  <body onload="cargar_clientes(); cargar_reuniones(); cargar_usuarios();">
+     <!-- Mensaje -->
+     <div class="modal" tabindex="-1" role="dialog" id="sms">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Mensaje</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="mensaje">
+            
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-primary" data-dismiss="modal">aceptar</button> -->
+            <a href="" type="button" class="btn btn-primary">Aceptar</a>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
+    <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">CRM Registro Reuniones</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="" method="POST">
+                <div class="form-group">
+                    <label for="nombre">Título</label>
+                    <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Titulo"
+                    required data-validation-required-message="Ingrese su nombre de usuario.">
+                  </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" class="form-control" name="fecha" id="fecha">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="apellido">Hora</label>
+                    <input type="time" class="form-control" name="hora" id="hora">
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Cliente</label>
+                    <select class="form-control" id="cliente">
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleFormControlSelect1">Usuario</label>
+                    <select class="form-control" id="usuario">
+                    </select>
+                  </div>
+                <div class="form-group">
+                  <label for="usuario" >Virtual</label>
+                  <input type="checkbox"  name="virtual" id="virtual">
+                </div>
+            
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                  <a href="#" class="btn btn-primary" onclick="registrar_reuniones()">Registrar</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </div> 
+    <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">CRM Edición Reuniones</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="" method="POST">
+                <div class="form-group">
+                    <label for="nombre">Título</label>
+                    <input type="text" class="form-control" name="tituloE" id="tituloE" placeholder="Titulo"
+                    required data-validation-required-message="Ingrese su nombre de usuario.">
+                    <input type="hidden" name="" id="idE">
+                  </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" class="form-control" name="fechaE" id="fechaE">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="apellido">Hora</label>
+                    <input type="time" class="form-control" name="horaE" id="horaE">
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Cliente</label>
+                    <select class="form-control" id="clienteE">
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleFormControlSelect1">Usuario</label>
+                    <select class="form-control" id="usuarioE">
+                    </select>
+                  </div>
+                <div class="form-group">
+                  <label for="usuario" >Virtual</label>
+                  <input type="checkbox"  name="virtual" id="virtualE">
+                </div>
+            
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                  <a href="#" class="btn btn-primary" onclick="editar_reuniones()">Editar</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </div> 
+    <div class="container-fluid">
+      <hr />
+      <center><h1 class="x"><i class="fa fa-diamond fa-1x" aria-hidden="true" style="color: black;">
+    </i>CRM Portillo`s<a  href="./dashboard_user.html" class="btn btn-primary" style="position: relative; left: 450px; ">Regresar</a></h1></center>
+      <hr />
+      <h1 id="admin" >Administrar Reuniones</h1>
+  <br>
+      <div class="row">
+        <div class="col-sm-11">
+            
+          <table class="table table-striped" id="tabla">
+            <thead style="background-color: #3B7DEB; color: white;">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Título</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Hora</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Virtual</th>
+                <th scope="col">Cliente</th>
+                <th scope="col"><a  href="./dashboard_user.html" id="agregar" class="btn btn-success" data-toggle="modal" data-target="#modal_registro">A</a></th>
+              </tr>
+            </thead>
+            <tbody>
+             
+            </tbody>
+          </table>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+    </div>
+    
+    <!-- JS, Popper.js, and jQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="../Js/controller_reuniones_cliente.js"></script>
+  </body>
 </html>
