@@ -30,7 +30,7 @@ if (administrador) {
                     <a class="nav-link" href="../html/contactos.html" id="link">Contactos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../html/tickets.html" id="link">Tickets</a>
+                    <a class="nav-link" href="../html/tickets.html" id="link">Support Tickets</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../html/reuniones.html" id="link">Reuniones</a>

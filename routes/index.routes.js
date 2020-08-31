@@ -34,6 +34,13 @@ const {
   reunionesPatch,
   reunionesDelete,
 } = require("../controller/reunionesController");
+//Call methods tikets
+const {
+  tiketPost,
+  tiketGet,
+  tiketPatch,
+  tiketDelete
+} = require("../controller/tiketsController");
 
 //Listen to the users request
 router.post("/CRM/users", userPost);
@@ -60,5 +67,11 @@ router.post("/CRM/reuniones",validarToken,reunionesPost);
 router.get("/CRM/reuniones",validarToken,reunionesGet);
 router.patch("/CRM/reuniones",validarToken,reunionesPatch);
 router.delete("/CRM/reuniones",validarToken,reunionesDelete);
+
+//Listen to the reuniones request
+router.post("/CRM/tikets",validarToken,tiketPost);
+router.get("/CRM/tikets",validarToken,tiketGet);
+router.patch("/CRM/tikets",validarToken,tiketPatch);
+router.delete("/CRM/tikets",validarToken,tiketDelete);
 
 module.exports = router;
