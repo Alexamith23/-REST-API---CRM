@@ -8,7 +8,7 @@ function cargar_clientes() {
       alert("Su sessión ha caducado, por favor vuelva a iniciar sessión");
       window.open("../index.html", "_self");
     } else if(clientes.no_clientes){
-      document.getElementById("admin").innerText = "¡¡¡Lo siento :( Si no tienes cliente no puedes crear tickets!!!";
+      document.getElementById("admin").innerText = "¡¡¡Lo siento :( Si no tienes clientes no puedes crear tickets!!!";
       $("#agregar").css('visibility', 'hidden');
     }else if(clientes.error){
       alert(clientes.error);

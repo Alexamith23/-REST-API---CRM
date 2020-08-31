@@ -8,7 +8,7 @@ function cargar_clientes() {
       alert("Su sessión ha caducado, por favor vuelva a iniciar sessión");
       window.open("../index.html", "_self");
     } else if(clientes.no_clientes){
-      document.getElementById("admin").innerText = "¡¡¡Vaya al parecer no tienes contactos!!!";
+      document.getElementById("admin").innerText = "¡¡¡Lo siento, si no tienes clientes. No puedes tener reuniones!!!";
       $("#agregar").css('visibility', 'hidden');
     }else if(clientes.error){
       alert(clientes.error);
@@ -49,7 +49,9 @@ function cargar_usuarios() {
         let arreglo = clientes;
         var d = '';
         for (var i = 0; i < arreglo.length; i++) {
-          d += '<option>'+arreglo[i].usuario +'</option>';
+          if(!arreglo[i].administrador){
+            d += '<option>'+arreglo[i].usuario +'</option>';
+          }
         }
         $("#usuarioE").append(d);
         $("#usuario").append(d);
@@ -70,7 +72,7 @@ function cargar_reuniones() {
       alert("Su sessión ha caducado, por favor vuelva a iniciar sessión");
       window.open("../index.html", "_self");
     } else if(clientes.vacio){
-      document.getElementById("admin").innerText = "¡¡¡Vaya al parecer no tienes reuniones!!!";
+      // document.getElementById("admin").innerText = "¡¡¡Vaya al parecer no tienes reuniones!!!";
 
     }else if(clientes.error){
       

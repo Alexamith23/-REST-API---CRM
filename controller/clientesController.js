@@ -68,7 +68,6 @@ const clientPost = (req, res) => {
 const clientGet = (req, res) => {
   // if an specific user is required
   if (req.query && req.query.id) {
-    console.log("Entra aquiiiiiiiii");
     Cliente.findById(req.query.id, function (err, client) {
       if (err) {
         res.status(404);

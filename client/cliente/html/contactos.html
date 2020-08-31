@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../css/style.css" />
     <title>Clientes</title>
   </head>
-  <body onload="cargar_clientes(); cargar_contactos();">
+  <body onload="cargar_contactos(); cargar_clientes();">
      <!-- Mensaje -->
      <div class="modal" tabindex="-1" role="dialog" id="sms">
       <div class="modal-dialog" role="document">
@@ -24,7 +24,7 @@
             
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">aceptar</button>
+            <a type="button" href="" class="btn btn-primary">Aceptar</a>
           </div>
         </div>
       </div>
@@ -71,7 +71,7 @@
                   
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                  <a href="" class="btn btn-primary" onclick="registrar_contactos()">Registrar</a>
+                  <a href="#" class="btn btn-primary" onclick="registrar_contactos()">Registrar</a>
                 </div>
               </form>
             </div>

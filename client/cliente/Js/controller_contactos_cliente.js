@@ -8,7 +8,7 @@ function cargar_clientes() {
       alert("Su sessión ha caducado, por favor vuelva a iniciar sessión");
       window.open("../index.html", "_self");
     } else if(clientes.no_clientes){
-      document.getElementById("admin").innerText = "¡¡¡Vaya al parecer no tienes contactos!!!";
+      document.getElementById("admin").innerText = "¡¡¡Lo siento :( Si no tienes clientes no puedes tener contactos!!!";
       $("#agregar").css('visibility', 'hidden');
     }else if(clientes.error){
       alert(clientes.error);
@@ -45,6 +45,7 @@ function cargar_contactos() {
       window.open("../index.html", "_self");
     } else if(clientes.vacio){
       document.getElementById("admin").innerText = "¡¡¡Vaya al parecer no tienes contactos!!!";
+      
     }else if(clientes.error){
       alert(clientes.error);
     }
@@ -88,7 +89,7 @@ function registrar_contactos() {
   var telefono = document.getElementById("telefono").value;
   var puesto = document.getElementById("puesto").value;
 
-  var mensaje = "";
+  var mensaje = "Null";
   const completed = (e) => {
     var cliente = JSON.parse(e.target.responseText);
     if (cliente.Unauthorized) {
@@ -99,7 +100,7 @@ function registrar_contactos() {
     }else if(cliente.error){
       mensaje = cliente.error;
     }
-    else if(cliente.contacto){
+    else if(cliente){
       mensaje = "Registraste un contacto nuevo";
     }
     if(mensaje != ""){
@@ -182,10 +183,9 @@ function editar_contactos() {
       mensaje = cliente.error;
     }
     else if(cliente){
-      mensaje = cliente.editado;
-      window.open("../html/contactos.html", "_self");
+      mensaje = "Se editó el contacto";
     }
-    $("#modal_registro").modal("hide");
+    $("#modal_editar").modal("hide");
     output.innerHTML = mensaje;
     $("#sms").modal();
   };
@@ -211,7 +211,6 @@ function borrar_contactos(id) {
       $("#modal_registro").modal("hide");
       output.innerHTML = "Se borró el contacto";
       $("#sms").modal();
-      window.open("../html/contactos.html", "_self");
     };
     const error = () => console.log(this.responseText);
     let persona = JSON.parse(localStorage.getItem("usuarios"));

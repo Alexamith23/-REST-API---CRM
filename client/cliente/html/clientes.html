@@ -24,7 +24,7 @@
             
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">aceptar</button>
+            <a type="button" href="" class="btn btn-primary">Aceptar</a>
           </div>
         </div>
       </div>
@@ -76,7 +76,7 @@
                   </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                  <a href="" class="btn btn-primary" onclick="registrar_clientes()">Registrar</a>
+                  <a href="#" class="btn btn-primary" onclick="registrar_clientes()">Registrar</a>
                 </div>
               </form>
             </div>
@@ -131,7 +131,7 @@
                 </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <a class="btn btn-primary" onclick="editar_clientes()" href="#">Editar</a>
+                <a href="#" class="btn btn-primary" onclick="editar_clientes()">Editar</a>
               </div>
             </form>
           </div>
@@ -185,15 +185,5 @@
       crossorigin="anonymous"
     ></script>
     <script type="text/javascript" src="../Js/controller.js"></script>
-    <script>
-      function validar() {
-            var respuesta = confirm("¿Seguro quiere eliminar el cliente?");
-            if (respuesta) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    </script>
   </body>
 </html>

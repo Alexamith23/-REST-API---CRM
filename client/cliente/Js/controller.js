@@ -145,14 +145,12 @@ function registrar_clientes() {
     }else if(cliente.error){
       mensaje = cliente.error;
     }
-    else if(cliente.client){
+    else if(cliente){
       mensaje = "Registraste un cliente nuevo";
     }
-    if(mensaje != ""){
       $("#modal_registro").modal("hide");
       output.innerHTML = mensaje;
       $("#sms").modal();
-    }
   };
   const error = () => console.log(this.responseText);
   let persona = JSON.parse(localStorage.getItem("usuarios"));
@@ -229,9 +227,8 @@ function editar_clientes() {
     }
     else if(cliente.editado){
       mensaje = cliente.editado;
-      window.open("../html/clientes.html", "_self");
     }
-    $("#modal_registro").modal("hide");
+    $("#modal_editar").modal("hide");
     output.innerHTML = mensaje;
     $("#sms").modal();
   };
@@ -255,9 +252,8 @@ function borrar_clientes(id) {
   if(confirmar_para_borrar()){
     const completed = (e) => {
       $("#modal_registro").modal("hide");
-      output.innerHTML = mensaje;
+      output.innerHTML = "Se borró el cliente";
       $("#sms").modal();
-      window.open("../html/clientes.html", "_self");
     };
     const error = () => console.log(this.responseText);
     let persona = JSON.parse(localStorage.getItem("usuarios"));
