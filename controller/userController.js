@@ -54,7 +54,11 @@ const userPost = (req, res) => {
     user.apellido = req.query.apellido;
     user.usuario = req.query.usuario;
     user.clave = req.query.clave;
-    user.administrador = false;
+    if (req.query.admin) {
+      user.administrador = req.query.admin;
+    }else{
+      user.administrador = false;
+    }
     validar_UserName(user.usuario, user, res);
   } else {
     res.json({
@@ -109,11 +113,11 @@ const userPatch = (req, res) => {
         res.json({ error: "User doesnt exist edit" });
       }
       // update the user object (patch)
-      user.nombre = req.body.nombre ? req.body.nombre : nombre.nombre;
-      user.apellido = req.body.apellido ? req.body.apellido : user.apellido;
-      user.usuario = req.body.usuario ? req.body.usuario : user.usuario;
-      user.clave = req.body.clave ? req.body.clave : user.clave;
-
+      user.nombre = req.query.nombre ? req.query.nombre : nombre.nombre;
+      user.apellido = req.query.apellido ? req.query.apellido : user.apellido;
+      user.usuario = req.query.usuario ? req.query.usuario : user.usuario;
+      user.clave = req.query.clave ? req.query.clave : user.clave;
+      user.administrador = req.query.admin ? req.query.admin : user.administrador;
       // update the user object (put)
 
       user.save(function (err) {
@@ -130,7 +134,7 @@ const userPatch = (req, res) => {
     });
   } else {
     res.status(404);
-    res.json({ error: "User doesnt exist aja" });
+    res.json({ error: "User doesnt exist" });
   }
 };
 /**
@@ -177,9 +181,7 @@ const userAutenticate = (req, res) => {
   if (req.query.usuario && req.query.clave) {
     User.find({ usuario: req.query.usuario, clave: req.query.clave },function (err, usuario) {
         if (usuario.length > 0) {
-          res.json({
-            token: saveSession(usuario[0])
-          });
+          res.json({token: saveSession(usuario[0]), administrador:usuario[0].administrador});
         } else {
           res.status(422);
           res.json({

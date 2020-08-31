@@ -177,7 +177,6 @@ function cargar_datos(_id) {
       if(clientes.virtual){
         $("#virtualE").prop("checked", true);
       }
-    //   document.getElementById("virtualE").value = clientes.virtual;
       $("#modal_editar").modal();
     }
   };

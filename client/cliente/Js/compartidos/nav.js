@@ -1,5 +1,5 @@
 var output = document.getElementById("nav");
-var administrador = false;
+let administrador = JSON.parse(localStorage.getItem("usuarios"));
 output.innerHTML += `<a class="navbar-brand" href="#" id ="nav_color"style="font-family: Impact, 
                     Haettenschweiler, 'Arial Narrow Bold', sans-serif;"><i class="fa fa-diamond" aria-hidden="true"></i>
                     CRM Portillo´s</a>
@@ -7,17 +7,15 @@ output.innerHTML += `<a class="navbar-brand" href="#" id ="nav_color"style="font
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>`;
-if (administrador) {
+if (administrador[1].administrador) {
   output.innerHTML += `
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                <a class="nav-link" href="#" id="link">Usuarios <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#" id="link">Reportes</a>
+                <a class="nav-link" href="../html/user.html" id="link">Usuarios</a>
                 </li>
             </ul>
+            <button class="btn btn-success" onclick="cerrar_session()">Salir</button>
         </div>`;
 }else{
     output.innerHTML += `

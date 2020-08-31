@@ -55,7 +55,11 @@ function autenticar() {
     } else if (persona.repetido) {
       mensaje = "Nombre de usuario o contraseña incorrecto";
     } else if (persona.token) {
-      var usuario = [{"usuario_token":persona.token}];
+      if (persona.administrador === undefined) {
+        persona.administrador = false;
+      }
+
+      var usuario = [{"usuario_token":persona.token},{"administrador":persona.administrador}];
       localStorage.setItem("usuarios", JSON.stringify(usuario)); 
       window.open("./html/dashboard_user.html", "_self");
     }

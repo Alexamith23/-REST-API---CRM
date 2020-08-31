@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link href="../vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="../css/style.css" />
+    <title>Support Tikets</title>
+  </head>
+  <body onload="cargar_usuarios();">
+     <!-- Mensaje -->
+     <div class="modal" tabindex="-1" role="dialog" id="sms">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Mensaje</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="mensaje">
+            
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-primary" data-dismiss="modal">aceptar</button> -->
+            <a href="" type="button" class="btn btn-primary">Aceptar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modal_registro" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">CRM Registro</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="" method="POST">
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="apellido">Apellidos</label>
+                    <input type="text" class="form-control" name="apellido" id="apellido" placeholder="apellido">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="usuario">Usuario</label>
+                  <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Usuario">
+                </div>
+                <div class="form-group">
+                  <label for="clave">Contraseña</label>
+                  <input type="password" class="form-control" name="clave" id="clave" placeholder="***********">
+                </div>
+                <div class="form-group col-md-12">
+                    <label for="fecha">Administrador</label>
+                    <input type="checkbox"  name="administrador" id="administrador">
+                  </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                  <a href="#" type="button" class="btn btn-primary" onclick="registrar_usuario()">Entrar</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div> 
+      <div class="modal fade" id="modal_editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">CRM Editar Usuario</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="" method="POST">
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control" name="nombreE" id="nombreE" placeholder="Nombre">
+                    <input type="hidden" id="idE">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="apellido">Apellidos</label>
+                    <input type="text" class="form-control" name="apellidoE" id="apellidoE" placeholder="Apellido">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="usuario">Usuario</label>
+                  <input type="text" class="form-control" name="usuarioE" id="usuarioE" placeholder="Usuario">
+                </div>
+                <div class="form-group">
+                  <label for="clave">Contraseña</label>
+                  <input type="text" class="form-control" name="claveE" id="claveE" placeholder="***********">
+                </div>
+                <div class="form-group col-md-12">
+                    <label for="fecha">Administrador</label>
+                    <input type="checkbox"  name="administradorE" id="administradorE">
+                  </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                  <a href="#" type="button" class="btn btn-primary" onclick="editar_usuarios()">Editar</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="container-fluid">
+      <hr />
+      <center><h1 class="x"><i class="fa fa-diamond fa-1x" aria-hidden="true" style="color: black;">
+    </i>CRM Portillo`s<a  href="./dashboard_user.html" class="btn btn-primary" style="position: relative; left: 450px; ">Regresar</a></h1></center>
+      <hr />
+      <h1 id="admin" >Bienvenido a la sección para administrar los usuarios</h1>
+  <br>
+      <div class="row">
+        <div class="col-sm-11">
+            
+          <table class="table table-striped" id="tabla">
+            <thead style="background-color: #3B7DEB; color: white;">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellidos</th>
+                <th scope="col">Nombre de usuario</th>
+                <th scope="col">Contraseña</th>
+                <th scope="col">Rol</th>
+                <th scope="col"><a  href="./dashboard_user.html" id="agregar" class="btn btn-success" data-toggle="modal" data-target="#modal_registro">A</a></th>
+              </tr>
+            </thead>
+            <tbody>
+             
+            </tbody>
+          </table>
+        </div>
+        <div class="col-sm-1"></div>
+      </div>
+    </div>
+    
+    <!-- JS, Popper.js, and jQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="../Js/controller_user_cliente.js"></script>
+  </body>
+</html>
